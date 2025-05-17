@@ -9,7 +9,7 @@ const sessionSchema = z.object({
 })
 
 const SESSION_EXPIRATION = 60 * 60 * 24 * 7;
-const COOKIE_SESSION_KEY= 'custon_auth_session_key'
+const COOKIE_SESSION_KEY= "session-id"
 
 export type Cookies = {
     set: (

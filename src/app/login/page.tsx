@@ -6,9 +6,10 @@ import { Label } from "@radix-ui/react-label"
 import { Input } from "~/components/ui/input"
 import Link from "next/link"
 import { Button } from "~/components/ui/button"
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 import { useToast } from "~/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { api } from "~/trpc/react"
 
 export default function LoginPage(){
     const [isLoading, setIsLoading] = useState(false);

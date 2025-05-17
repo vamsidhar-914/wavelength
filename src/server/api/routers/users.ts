@@ -47,11 +47,16 @@ export const userRouter = createTRPCRouter({
                 if(user == null){
                     return 'unable to create a account'
                 }
-                await createUserSession(user,await cookies());
+                await createUserSession(user, await cookies());
+
                 return 'user created successfully'
            }catch(err){
             return `unable to create account ${err}`
            }
            
-        })
+        }),
+    getcookie: publicProcedure.query(({ ctx }) => {
+        const cookieValue = ctx.cookies["session-id"]
+        return cookieValue;
+    })
 })

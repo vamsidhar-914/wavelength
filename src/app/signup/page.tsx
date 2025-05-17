@@ -113,7 +113,7 @@ export default function SignupPage() {
     if (!validateForm()) return
 
     signUpMutaiton({
-        name: formData.firstName + formData.lastName,
+        name: formData.firstName + " " + formData.lastName,
         email: formData.email,
         password: formData.password
     })
