@@ -2,11 +2,27 @@
 
 import { WaveIcon } from "./_components/wave-icon";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 
 export default function Home() {
-  const { data } = api.user.getCurrentUser.useQuery();
+  const { data , refetch } = api.user.getCurrentUser.useQuery(undefined,{
+    staleTime: Infinity,
+    refetchOnWindowFocus: false
+  });
+
+  const { mutate } = api.user.logout.useMutation({
+    onSuccess(data, variables, context) {
+        refetch()
+        console.log(data)
+    },
+  })
+
+  function handleLogout(){
+    mutate(); 
+  }
+
   return (
       <div className="container max-w-4xl py-6">
          <header className="flex items-center justify-between mb-8">
@@ -22,7 +38,7 @@ export default function Home() {
               <Button className="bg-emerald-600 hover:bg-emerald-700">New Wave</Button>
             </Link>
             <Link href={`/`}>
-              <Button variant="ghost">{data.role}</Button>
+              <Button variant="destructive" onClick={handleLogout}>Logout</Button>
             </Link>
           </div>
         ) : (

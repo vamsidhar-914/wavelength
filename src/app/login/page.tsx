@@ -9,9 +9,12 @@ import { Button } from "~/components/ui/button"
 import { useEffect, useState, type ChangeEvent } from "react"
 import { useToast } from "~/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { api } from "~/trpc/react"
 
 export default function LoginPage(){
-    const [isLoading, setIsLoading] = useState(false);
+    
+    const [loginError , setLoginError] = useState<String>("") 
+
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -56,33 +59,50 @@ export default function LoginPage(){
         setErrors(newErrors)
         return valid
       }
+    
+    const { refetch } = api.user.getCurrentUser.useQuery();
+
+    const { 
+      mutate: loginMutation,
+      data: loginData,
+      isPending,
+      error
+    } = api.user.signIn.useMutation({
+        onSuccess(data, variables) {
+            console.log("data",data)
+            if(data === 'incorrect password'){
+              setLoginError("Incorrect Password")
+            }else if (data === 'user not found,unable to login'){
+              setLoginError("User not found with the email")
+            }else if(data === 'user logged in successfully'){
+              refetch();
+              toast({
+                title: "Login successful",
+                description: data,
+              })
+              router.push("/")
+            }
+        },
+        onError(error, variables) {
+            console.log("error", error)
+            toast({
+              title: "Login failed",
+              description: "Invalid email or password. Please try again.",
+              variant: "destructive",
+            })
+        },
+    })
 
       const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-    
+        e.preventDefault();
         if (!validateForm()) return
-    
-        setIsLoading(true)
-    
-        try {
-          // Simulating API call
-    
-          // Mock successful login
-          toast({
-            title: "Login successful",
-            description: "Welcome back to Wavelength!",
-          })
-    
-          router.push("/")
-        } catch (error) {
-          toast({
-            title: "Login failed",
-            description: "Invalid email or password. Please try again.",
-            variant: "destructive",
-          })
-        } finally {
-          setIsLoading(false)
-        }
+
+        loginMutation({ 
+          email: formData.email,
+          password: formData.password
+         })
+
+         console.log(loginData);
       }
 
     return(
@@ -96,6 +116,9 @@ export default function LoginPage(){
                     </div>
                     <CardTitle className="text-2xl">Welcome back</CardTitle>
                     <CardDescription>Enter your credentials to sign in to your account</CardDescription>
+                    {loginError && (
+                      <CardDescription className="text-red-500 pt-3">{loginError}</CardDescription>
+                    )}
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -131,8 +154,8 @@ export default function LoginPage(){
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={isPending}>
+              {isPending ? "Signing in..." : "Sign in"}
             </Button>
             <p className="mt-4 text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}

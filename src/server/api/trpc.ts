@@ -24,6 +24,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     isAdmin: false,
     db,
+    res: new Headers(),
     cookies,
     ...opts,
   };

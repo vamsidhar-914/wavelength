@@ -82,10 +82,8 @@ export default function SignupPage() {
     return valid
   }
 
-  const { refetch  } = api.user.getCurrentUser.useQuery();
-
   const { mutate: signUpMutaiton ,data,isError,isPending } = api.user.signUp.useMutation({
-        onSuccess(data, variables, context) {
+        onSuccess(data, variables) {
             console.log(data);
             setFormData({
                 firstName:"",
@@ -98,10 +96,9 @@ export default function SignupPage() {
                 description: data,
                 variant: "default"
             })
-            refetch();
-            router.push("/")
+            router.push("/login")
         },
-        onError(error, variables, context) {
+        onError(error, variables) {
             console.log(error);
             toast({
                 title: "Registration failed",

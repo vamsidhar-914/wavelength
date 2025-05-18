@@ -4,7 +4,7 @@ import crypto from 'crypto'
 import { redisClient } from "~/redis/redis";
 
 const sessionSchema = z.object({
-    id: z.number(),
+    id: z.string(),
     role: z.string()
 })
 
@@ -49,4 +49,9 @@ export async function getUserSessionById(sessionId: string){
     const rawUser = await redisClient.get(`session:${sessionId}`)
     const { success, data: user } = sessionSchema.safeParse(rawUser);
     return success ? user : null;
+}
+
+export async function removeUserFromSession(cookies: Pick<Cookies, 'delete' | 'get'>, sessionId: string){
+    await redisClient.del(`session:${sessionId}`)
+    cookies.delete(COOKIE_SESSION_KEY);
 }
