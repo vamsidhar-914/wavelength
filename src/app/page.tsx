@@ -1,5 +1,6 @@
 "use client"
 
+import { getQueryKey } from "@trpc/react-query";
 import { WaveIcon } from "./_components/wave-icon";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,10 +8,13 @@ import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 
 export default function Home() {
-  const { data , refetch } = api.user.getCurrentUser.useQuery(undefined,{
+  const { data , refetch } = api.user.getCurrentUser.useQuery();
+
+  const { data: getUserData  } = api.user.getUser.useQuery({userId: '1' },{
+    queryHash: "getUserdata",
     staleTime: Infinity,
     refetchOnWindowFocus: false
-  });
+  })
 
   const { mutate } = api.user.logout.useMutation({
     onSuccess(data, variables, context) {
@@ -31,6 +35,7 @@ export default function Home() {
             <WaveIcon className="h-8 w-8 text-emerald-500" />
           </Link>
           <h1 className="text-2xl font-bold">Wavelength</h1>
+          <h1>{getUserData?.name}</h1>
         </div>
         {data ? (
           <div className="flex items-center gap-4">
