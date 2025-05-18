@@ -82,6 +82,8 @@ export default function SignupPage() {
     return valid
   }
 
+  const { refetch  } = api.user.getCurrentUser.useQuery();
+
   const { mutate: signUpMutaiton ,data,isError,isPending } = api.user.signUp.useMutation({
         onSuccess(data, variables, context) {
             console.log(data);
@@ -96,7 +98,8 @@ export default function SignupPage() {
                 description: data,
                 variant: "default"
             })
-            router.push("/login")
+            refetch();
+            router.push("/")
         },
         onError(error, variables, context) {
             console.log(error);

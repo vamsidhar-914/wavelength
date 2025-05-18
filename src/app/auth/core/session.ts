@@ -8,8 +8,8 @@ const sessionSchema = z.object({
     role: z.string()
 })
 
-const SESSION_EXPIRATION = 60 * 60 * 24 * 7;
-const COOKIE_SESSION_KEY= "session-id"
+export const SESSION_EXPIRATION = 60 * 60 * 24 * 7;
+export const COOKIE_SESSION_KEY= "session-id"
 
 export type Cookies = {
     set: (
@@ -45,3 +45,8 @@ function setCookie(sessionId: string, cookies: Pick<Cookies, 'set'>){
     })
 }
 
+export async function getUserSessionById(sessionId: string){
+    const rawUser = await redisClient.get(`session:${sessionId}`)
+    const { success, data: user } = sessionSchema.safeParse(rawUser);
+    return success ? user : null;
+}

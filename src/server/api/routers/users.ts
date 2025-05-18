@@ -2,7 +2,7 @@ import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { signupSchema } from "~/app/_components/schemas";
 import { generateSalt, hashPassowrd } from "~/app/auth/core/passwordHasher";
-import { createUserSession } from "~/app/auth/core/session";
+import { COOKIE_SESSION_KEY, createUserSession, getUserSessionById } from "~/app/auth/core/session";
 import { cookies } from "next/headers";
 
 export const userRouter = createTRPCRouter({
@@ -55,8 +55,12 @@ export const userRouter = createTRPCRouter({
            }
            
         }),
-    getcookie: publicProcedure.query(({ ctx }) => {
-        const cookieValue = ctx.cookies["session-id"]
-        return cookieValue;
-    })
+    getCurrentUser: publicProcedure
+        .query(async({ ctx }) => {
+            const sessionId = ctx.cookies[COOKIE_SESSION_KEY];
+            if(sessionId == null) return null   
+            console.log("sessionid",sessionId)
+            const user = await getUserSessionById(sessionId!);
+            return user
+        })
 })
