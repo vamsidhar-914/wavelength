@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import cookie from 'cookie'
 
 import { db } from "~/server/db";
+import { getUserSessionById } from "~/app/auth/core/session";
 
 /**
  * 1. CONTEXT
@@ -18,15 +19,51 @@ import { db } from "~/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+
+export interface CreateContextOptions {
+  headers: Headers,
+  req?: NextRequest,
+  res?: Response
+}
+
+export const createTRPCContext = async (opts: CreateContextOptions) => {
+  const { headers,res,req } = opts;
   const cookieHeader = opts.headers.get("cookie") || ""
   const cookies = cookie.parse(cookieHeader)
+
+  let sessionId: string | undefined;
+  if(req?.cookies){
+    sessionId = req.cookies.get("session-id")?.value
+  }else{
+    const cookieHeader = headers.get('cookie')
+    if(cookieHeader){
+      const cookies = cookieHeader.split(";")
+      for(const cookie of cookies){
+        const [name,value] = cookie.trim().split("=")
+        if(name === "session-id"){
+          sessionId = value;
+        }
+      }
+    }
+  }
+
+  let user = null;
+  if(sessionId){
+    try{
+        user = await getUserSessionById(sessionId);
+    }catch(error){
+      console.log("error fetching user session:", error);
+    }
+  }
+
   return {
     isAdmin: false,
     db,
-    res: new Headers(),
     cookies,
-    ...opts,
+    headers,
+    user,
+    req,
+    res
   };
 };
 
@@ -79,11 +116,20 @@ export const createTRPCRouter = t.router;
  * network latency that would occur in production but not in local development.
  */
 
-const testMiddleware = t.middleware(({ ctx,next }) => {
-  if(!ctx.isAdmin){
-    throw new TRPCError({ code: 'UNAUTHORIZED',message: "you are not the admin" });
+const protectedMiddleware = t.middleware(async ({ ctx,next }) => {
+  if(!ctx.user){
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: "you are not authenticated"
+    })
   }
-  return next({ ctx: { user: { id: 1 } } })
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user
+    }
+  })
 })
 
 const timingMiddleware = t.middleware(async ({ next, path }) => {
@@ -111,4 +157,4 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
-export const adminProcedure = t.procedure.use(testMiddleware);
+export const protectedProcedure = t.procedure.use(protectedMiddleware);

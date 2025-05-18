@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
+import {  createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { signupSchema } from "~/app/_components/schemas";
 import { comparePasswords, generateSalt, hashPassowrd } from "~/app/auth/core/passwordHasher";
 import { COOKIE_SESSION_KEY, createUserSession, getUserSessionById, removeUserFromSession } from "~/app/auth/core/session";
@@ -13,11 +13,6 @@ export const userRouter = createTRPCRouter({
                 id:input.userId,
                 name: "vamsi"
             }
-        }),
-    secretData: adminProcedure
-        .query(({ ctx }) => {
-            console.log(ctx.user);
-            return "super top secret data"
         }),
     signUp: publicProcedure
         .input(signupSchema).mutation(async ({ input,ctx }) => {
@@ -105,5 +100,9 @@ export const userRouter = createTRPCRouter({
             }
             await removeUserFromSession(await cookies(),sessionId)
             return "loggedout successfully"
+        }),
+    getContext: protectedProcedure
+        .query(async ({ ctx }) => {
+            return "this is protected route"
         })
 })
