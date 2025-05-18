@@ -12,7 +12,7 @@ import { toast } from "~/hooks/use-toast";
 export default function Home() {
   const { data , refetch , isLoading } = api.user.getCurrentUser.useQuery();
 
-  const { mutate } = api.user.logout.useMutation({
+  const { mutate } = api.auth.logout.useMutation({
     onSuccess(data, variables, context) {
         refetch()
         console.log(data)

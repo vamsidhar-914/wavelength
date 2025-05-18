@@ -67,7 +67,7 @@ export default function LoginPage(){
       data: loginData,
       isPending,
       error
-    } = api.user.signIn.useMutation({
+    } = api.auth.signIn.useMutation({
         onSuccess(data, variables) {
             console.log("data",data)
             if(data === 'incorrect password'){

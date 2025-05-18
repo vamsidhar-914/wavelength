@@ -82,7 +82,7 @@ export default function SignupPage() {
     return valid
   }
 
-  const { mutate: signUpMutaiton ,data,isError,isPending } = api.user.signUp.useMutation({
+  const { mutate: signUpMutaiton ,data,isError,isPending } = api.auth.signUp.useMutation({
         onSuccess(data, variables) {
             console.log(data);
             setFormData({
