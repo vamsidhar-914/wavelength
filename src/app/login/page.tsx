@@ -78,7 +78,7 @@ export default function LoginPage(){
               refetch();
               toast({
                 title: "Login successful",
-                description: data,
+                description: data
               })
               router.push("/")
             }

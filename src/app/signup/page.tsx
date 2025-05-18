@@ -124,7 +124,9 @@ export default function SignupPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-2">
-            <WaveIcon className="h-10 w-10 text-emerald-500" />
+            <Link href="/">
+              <WaveIcon className="h-10 w-10 text-emerald-500" />
+            </Link>
           </div>
           <CardTitle className="text-2xl">Create an account</CardTitle>
           <CardDescription>Enter your information to create your account</CardDescription>
