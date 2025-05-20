@@ -63,7 +63,7 @@ export default function CreatePost() {
    // implement create post mutation
    tweetMutation({ content })
 
-   if(isError && error.data?.code === 'UNAUTHORIZED'){
+   if(error && error.data?.code === 'UNAUTHORIZED'){
     toast({
         title: "UNAUTHORIZED",
         description: "you are not authenticated to create a tweet, please Login/Register",

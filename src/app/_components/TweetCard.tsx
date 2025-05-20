@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card"
 import { Heart, MessageCircle, UserPlus, UserMinus, MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { api } from "~/trpc/react"
+import { toast } from "~/hooks/use-toast"
 
 type TweetCardProps = {
     tweet : {
@@ -65,8 +66,22 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
     }
   })
 
+  const { mutate: deleteTweetMutation , isError,error } = api.tweet.adminRoute.useMutation();
+
   function handleToggle(){
     likeMutation({ id: tweet.id })
+  }
+
+  function handleDelete(){
+    deleteTweetMutation();
+    if(isError && error.data?.code === 'UNAUTHORIZED'){
+      toast({
+          title: "UNAUTHORIZED",
+          description: "you does not have admin access to delete",
+          variant:'destructive'
+      })
+      return;
+     }
   }
 
   return (
@@ -104,7 +119,7 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>{isAuthor ? "Delete wave" : "Report wave"}</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDelete}>{isAuthor ? "Delete wave" : "Report wave"}</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

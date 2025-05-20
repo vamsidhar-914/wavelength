@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure,publicProcedure } from "~/server/api/trpc";
+import { adminProcedure, createTRPCRouter, protectedProcedure,publicProcedure } from "~/server/api/trpc";
 
 export const tweetRouter = createTRPCRouter({
   // infiniteQuery
@@ -84,5 +84,9 @@ export const tweetRouter = createTRPCRouter({
          })
         return { addedLike:false }
       }
+    }),
+  adminRoute: adminProcedure
+    .mutation(async({ ctx }) =>  {
+        return ctx.isAdmin;
     })
 });

@@ -48,16 +48,22 @@ export const createTRPCContext = async (opts: CreateContextOptions) => {
   }
 
   let user = null;
+  let isAdmin = false
   if(sessionId){
     try{
         user = await getUserSessionById(sessionId);
+        if(user?.role === 'ADMIN'){
+          isAdmin = true
+        }else{
+          isAdmin = false
+        }
     }catch(error){
       console.log("error fetching user session:", error);
     }
   }
 
   return {
-    isAdmin: false,
+    isAdmin,
     db,
     cookies,
     headers,
@@ -132,6 +138,21 @@ const protectedMiddleware = t.middleware(async ({ ctx,next }) => {
   })
 })
 
+const adminMiddleware = t.middleware(async ({ ctx,next }) => {
+  if(!ctx.isAdmin){
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: "you does not have admin access"
+    })
+  }
+  return next({
+    ctx: {
+      ...ctx,
+      isAdmin: ctx.isAdmin
+    }
+  })
+})
+
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();
 
@@ -158,3 +179,4 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
 export const protectedProcedure = t.procedure.use(protectedMiddleware);
+export const adminProcedure = t.procedure.use(adminMiddleware);
