@@ -8,7 +8,6 @@ import Link from "next/link";
 
 export default function Header(){
     const { user: data,isLoading,refetch } = useUser()
-      const [mounted, setMounted] = useState(false)
       
       const { mutate } = api.auth.logout.useMutation({
         onSuccess(data, variables, context) {

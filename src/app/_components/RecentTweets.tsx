@@ -47,7 +47,7 @@ export default function RecentTweets({ tweets,isLoading,isError,hasMore,fetchNew
                 <p className="text-muted-foreground">Follow some users to see their waves in your feed</p>
                 <p className="text-muted-foreground">or</p>
                 <p className="text-muted-foreground mb-4">Start wavelength by creating <Link href="/createTweet">
-                    <span className="text-black text-lg">New Tweet</span>
+                    <span className="text-muted-forground text-lg hover:text-white">New Wave</span>
                 </Link></p>
                 <Link href="/discover">
                   <Button>Discover users</Button>
@@ -77,9 +77,9 @@ export default function RecentTweets({ tweets,isLoading,isError,hasMore,fetchNew
               )}
             </>
           ) : (
-            <div className="text-center py-16 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg">
+            <div className="text-center py-16 bg-gradient-to-r from-emerald-900 to-teal-700 rounded-lg">
               <h2 className="text-3xl font-bold mb-4">Find your wavelength</h2>
-              <p className="text-lg text-muted-foreground max-w-md mx-auto mb-6">
+              <p className="text-lg text-secondary max-w-md mx-auto mb-6">
                 Connect with like-minded people and share ideas that resonate with others.
               </p>
               <Link href="/signup">

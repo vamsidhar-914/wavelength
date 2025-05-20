@@ -41,7 +41,7 @@ export const authRouter = createTRPCRouter({
             return `unable to create account ${err}`
            }
         }),
-        signIn: publicProcedure
+    signIn: publicProcedure
         .input(z.object({
             email: z.string().email(),
             password: z.string()

@@ -15,9 +15,10 @@ export default function CreatePost() {
   const [content, setContent] = useState("")
   const router = useRouter()
 
-  if(user == null) return null;
+  // if(user == null) return null;
   
   const trpcUtils = api.useUtils();
+  
   const { mutate: tweetMutation,isPending,isError,error } = api.tweet.create.useMutation({
     onSuccess(data, variables, context) {
       trpcUtils.tweet.infiniteFeed.setInfiniteData({} , (oldData) => {
@@ -29,11 +30,11 @@ export default function CreatePost() {
           likeCount: 0,
           likedByMe: false,
           user : {
-            id: user?.id, 
+            id: user!.id, 
             name: "vamsidhar reddy"
           }
         }
-
+        
         return {
           ...oldData,
           pages: [
@@ -44,21 +45,19 @@ export default function CreatePost() {
             ...oldData.pages.slice(1)
           ]
         }
-
+        
       })
-        toast({
-            title: "created tweet",
-            description: `successgully tweet created at ${data.createdAt}`
-          })
-        router.push("/")
+      toast({
+        title: "created tweet",
+        description: `successgully tweet created at ${data.createdAt}`
+      })
+      router.push("/")
     },
     onError(error){
-        console.log("api failed", error);
+      console.log("api failed", error);
     }
   });
-
-
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
    // implement create post mutation
@@ -72,6 +71,8 @@ export default function CreatePost() {
     })
     return;
    }
+
+
   }
 
   return (

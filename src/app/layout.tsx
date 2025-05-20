@@ -6,6 +6,7 @@ import { Geist } from "next/font/google";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/utils/Toaste";
 import { UserProvider } from "~/context/userContext";
+import { ThemeProvider } from "./_components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -25,7 +26,9 @@ export default function RootLayout({
       <body className={geist.className}>
         <TRPCReactProvider>
           <UserProvider>
+          <ThemeProvider defaultTheme="light">
             {children}
+            </ThemeProvider>
           </UserProvider>
           <Toaster />
           </TRPCReactProvider>
