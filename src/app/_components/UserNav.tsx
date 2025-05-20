@@ -15,6 +15,8 @@ import {
 import { User, Settings, LogOut, Bell } from "lucide-react"
 import { api } from "~/trpc/react"
 import { toast } from "~/hooks/use-toast"
+import { useRouter } from "next/navigation"
+import { useUser } from "~/context/userContext"
 
 interface UserNavProps {
   user: {
@@ -24,15 +26,16 @@ interface UserNavProps {
 }
 
 export function UserNav({ user }: UserNavProps) {
+    const {refetch  } = useUser();
      
     const { mutate } = api.auth.logout.useMutation({
         onSuccess(data, variables, context) {
-            console.log(data)
             toast({
               title: "user logged out",
               description: data,
               variant: "destructive"
           })
+          refetch()
         },
       })
     

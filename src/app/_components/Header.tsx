@@ -6,6 +6,7 @@ import Link from "next/link";
 import { UserNav } from "./UserNav";
 import { SearchBar } from "./SearchBar";
 import { ThemeToggle } from "./theme-toggle";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export default function Header(){
     const { user: data,isLoading,refetch } = useUser()
@@ -25,10 +26,7 @@ export default function Header(){
           <div className="flex items-center gap-4">
             {/* <ThemeToggle />  */}
             {isLoading ?  (
-                <div className="flex items-center justify-center">
-                  <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-                
+                <Skeleton className="h-10 w-10 rounded-full" />
             ) : data ? (
               <UserNav user={data} />
             ) : (

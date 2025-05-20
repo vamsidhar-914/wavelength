@@ -4,6 +4,7 @@ import { useUser } from "~/context/userContext";
 import { TweetCard } from "./TweetCard";
 import { api } from "~/trpc/react";
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { TweetSkeletonList } from "~/skeleton/TweetSkeleton";
 
 type Tweet = {
     id: string
@@ -28,9 +29,7 @@ type InfiniteTweetListProps = {
 export default function RecentTweets({ tweets,isLoading,isError,hasMore,fetchNewTweets }: InfiniteTweetListProps){
     const { data: user } = api.user.getCurrentUser.useQuery();
 
-    if(isLoading) return <div className="flex items-center justify-center">
-    <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
+    if(isLoading) return <TweetSkeletonList />
   
     if(isError) return <h1>Error while loading the tweets</h1>
     if(tweets == null) return <h1>No tweets</h1>
