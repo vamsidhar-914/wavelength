@@ -8,6 +8,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card"
 import { Heart, MessageCircle, UserPlus, UserMinus, MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
+import { api } from "~/trpc/react"
 
 type TweetCardProps = {
     tweet : {
@@ -32,7 +33,7 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
   const isAuthor = currentUserId.id === tweet.user.id
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden mb-4">
       <CardHeader className="flex flex-row items-center gap-4 p-4">
         <Link href={`/profile/${tweet.user.id}`}>
           <Avatar className="h-10 w-10 border">
@@ -78,9 +79,9 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
         <p className="text-xs text-muted-foreground mt-2">{formatDistanceToNow(tweet.createdAt, { addSuffix: true })}</p>
       </CardContent>
       <CardFooter className="border-t p-2 flex items-center justify-between">
-        <Button variant="ghost" size="sm" className={tweet.likedByMe ? "text-rose-500" : ""} >
+        <Button variant="ghost" size="sm" className={tweet.likedByMe ? "text-rose-500" : ""}>
           <Heart size={18} className={tweet.likedByMe ? "fill-rose-500" : ""} />
-          <span className="ml-1">{tweet.likeCount > 0 ? tweet.likeCount : ""}</span>
+          <span className="ml-1">{tweet.likeCount > 0 ? tweet.likeCount : "0"}</span>
           <span className="sr-only">Resonance</span>
         </Button>
         <Link href={`/post/${tweet.id}`}>

@@ -3,14 +3,13 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "~/trpc/react";
 
-type User =  typeof api.user.getCurrentUser.useQuery extends () => {
-    data: infer U
-} 
-    ? U
-    : unknown;
+type User = {
+    id: string
+    role: string
+}
 
 type UserContextType = {
-    user: User | undefined;
+    user: User | undefined | null;
     isLoading: boolean;
     refetch: () => void;
 }
