@@ -4,10 +4,11 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 ## COMPLETED
 
-- [x] complete authentication done 
-- [x] protect routes using trpc middleware
-- [x] toaster fix
+- [x] adminmiddleware done
+- [x] cache update implemented
+- [x] refactored UI code
 
 ## TODO
 
-- [] Role based authorization
+- [] switching tabs logic
+- [] follow functionality
