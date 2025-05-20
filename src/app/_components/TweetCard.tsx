@@ -31,6 +31,43 @@ type TweetCardProps = {
 export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
 
   const isAuthor = currentUserId.id === tweet.user.id
+  const tweetId = tweet.id;
+
+  const trpcUtils = api.useUtils()
+  const { mutate: likeMutation } = api.tweet.toggleLike.useMutation({
+    onSuccess: ({ addedLike }) => {
+    const updateData: Parameters<typeof trpcUtils.tweet.infiniteFeed.setInfiniteData>[1] = (oldData) => {
+      if(oldData == null){
+        return;
+      }
+      const countModifier = addedLike ? 1 : -1;
+
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) => {
+          return {
+            ...page,
+            tweets: page.tweets.map((tweet) => {
+              if(tweet.id === tweetId){
+                return {
+                  ...tweet,
+                  likeCount: tweet.likeCount + countModifier,
+                  likedByMe: addedLike
+                }
+              }
+              return tweet;
+            })
+          }
+        })
+      }
+    }
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
+    }
+  })
+
+  function handleToggle(){
+    likeMutation({ id: tweet.id })
+  }
 
   return (
     <Card className="overflow-hidden mb-4">
@@ -79,7 +116,9 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
         <p className="text-xs text-muted-foreground mt-2">{formatDistanceToNow(tweet.createdAt, { addSuffix: true })}</p>
       </CardContent>
       <CardFooter className="border-t p-2 flex items-center justify-between">
-        <Button variant="ghost" size="sm" className={tweet.likedByMe ? "text-rose-500" : ""}>
+        <Button variant="ghost" size="sm" className={tweet.likedByMe ? "text-rose-500" : ""}
+        onClick={handleToggle}
+        >
           <Heart size={18} className={tweet.likedByMe ? "fill-rose-500" : ""} />
           <span className="ml-1">{tweet.likeCount > 0 ? tweet.likeCount : "0"}</span>
           <span className="sr-only">Resonance</span>

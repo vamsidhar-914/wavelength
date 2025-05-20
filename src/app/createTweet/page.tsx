@@ -8,20 +8,49 @@ import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
 import { api } from "~/trpc/react"
 import { toast } from "~/hooks/use-toast"
+import { useUser } from "~/context/userContext"
 
 export default function CreatePost() {
+  const { user } = useUser()
   const [content, setContent] = useState("")
   const router = useRouter()
 
+  if(user == null) return null;
+  
+  const trpcUtils = api.useUtils();
   const { mutate: tweetMutation,isPending,isError,error } = api.tweet.create.useMutation({
     onSuccess(data, variables, context) {
-        console.log(data)
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({} , (oldData) => {
+        if(oldData == null || oldData.pages[0] == null){
+          return;
+        }
+        const newCachedTweet = {
+          ...data,
+          likeCount: 0,
+          likedByMe: false,
+          user : {
+            id: user?.id, 
+            name: "vamsidhar reddy"
+          }
+        }
+
+        return {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              tweets: [newCachedTweet, ...oldData.pages[0].tweets]
+            },
+            ...oldData.pages.slice(1)
+          ]
+        }
+
+      })
         toast({
             title: "created tweet",
             description: `successgully tweet created at ${data.createdAt}`
           })
         router.push("/")
-        router.refresh()
     },
     onError(error){
         console.log("api failed", error);
