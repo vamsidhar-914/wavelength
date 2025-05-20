@@ -8,9 +8,19 @@ import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 import { ArrowUp, Icon, LoaderIcon } from "lucide-react";
 import { toast } from "~/hooks/use-toast";
+import { useEffect, useState } from "react";
+import { useUser } from "~/context/userContext";
 
 export default function Home() {
-  const { data , refetch , isLoading } = api.user.getCurrentUser.useQuery();
+  const { user: data,isLoading,refetch } = useUser()
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    if(isLoading){
+      setMounted(false)
+    }
+    setMounted(true)
+  },[])
 
   const { mutate } = api.auth.logout.useMutation({
     onSuccess(data, variables, context) {
@@ -37,7 +47,7 @@ export default function Home() {
           </Link>
           <h1 className="text-2xl font-bold">Wavelength</h1>
         </div>
-        {isLoading ?  (
+        {mounted ?  (
           <div className="flex items-center justify-center">
           <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
