@@ -19,7 +19,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const { data: user, isLoading, refetch } = api.user.getCurrentUser.useQuery();
-
+    
     return (
         <UserContext.Provider value={{ user,isLoading,refetch }}>
             {children}

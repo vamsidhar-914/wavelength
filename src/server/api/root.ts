@@ -1,4 +1,4 @@
-import { postRouter } from "~/server/api/routers/post";
+import { tweetRouter } from "~/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { userRouter } from "./routers/users";
 import { authRouter } from "./routers/auth";
@@ -9,7 +9,7 @@ import { authRouter } from "./routers/auth";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  tweet: tweetRouter,
   user: userRouter,
   auth: authRouter
 });
