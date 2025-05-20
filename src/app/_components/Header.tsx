@@ -41,7 +41,7 @@ export default function Header(){
                 
                 ) : data ? (
                   <div className="flex items-center gap-4">
-                  <Link href="/">
+                  <Link href="/createTweet">
                     <Button className="bg-emerald-600 hover:bg-emerald-700">New Wave</Button>
                   </Link>
                   <Link href={`/`}>

@@ -46,7 +46,7 @@ export default function RecentTweets({ tweets,isLoading,isError,hasMore,fetchNew
                 <h3 className="text-lg font-medium mb-2">Your feed is empty</h3>
                 <p className="text-muted-foreground">Follow some users to see their waves in your feed</p>
                 <p className="text-muted-foreground">or</p>
-                <p className="text-muted-foreground mb-4">Start wavelength by creating <Link href="/NewTweet">
+                <p className="text-muted-foreground mb-4">Start wavelength by creating <Link href="/createTweet">
                     <span className="text-black text-lg">New Tweet</span>
                 </Link></p>
                 <Link href="/discover">
