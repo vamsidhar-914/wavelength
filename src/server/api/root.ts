@@ -1,7 +1,8 @@
-import { tweetRouter } from "~/server/api/routers/post";
+
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { userRouter } from "./routers/users";
 import { authRouter } from "./routers/auth";
+import { tweetRouter } from "./routers/tweet";
 
 /**
  * This is the primary router for your server.

@@ -14,8 +14,6 @@ export default function CreatePost() {
   const { user } = useUser()
   const [content, setContent] = useState("")
   const router = useRouter()
-
-  // if(user == null) return null;
   
   const trpcUtils = api.useUtils();
   

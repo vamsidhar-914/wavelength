@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/utils/Toaste";
 import { UserProvider } from "~/context/userContext";
 import { ThemeProvider } from "./_components/theme-provider";
+import { useTheme } from "next-themes";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -21,16 +22,17 @@ const geist = Geist({
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+
   return (
     <html lang="en">
       <body className={geist.className}>
         <TRPCReactProvider>
           <UserProvider>
-          <ThemeProvider defaultTheme="light">
+          <ThemeProvider defaultTheme="dark">
             {children}
+            <Toaster />
             </ThemeProvider>
           </UserProvider>
-          <Toaster />
           </TRPCReactProvider>
       </body>
     </html>
