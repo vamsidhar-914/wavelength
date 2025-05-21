@@ -33,8 +33,9 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
   const tweetId = tweet.id;
 
   const trpcUtils = api.useUtils()
-  const { mutate: likeMutation } = api.tweet.toggleLike.useMutation({
+  const { mutate: likeMutation , isError ,error,isSuccess} = api.tweet.toggleLike.useMutation({
     onSuccess: ({ addedLike }) => {
+  
       const updateData: Parameters<typeof trpcUtils.tweet.infiniteFeed.setInfiniteData>[1] = (oldData) => {
         if (oldData == null) {
           return;
@@ -64,22 +65,19 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
     }
   })
 
-  const { mutate: deleteTweetMutation, isError, error } = api.tweet.adminRoute.useMutation();
-
   function handleToggle() {
-    likeMutation({ id: tweet.id })
+     likeMutation({ id: tweet.id })
+    if(isError && error){
+      toast({
+        title: "UNAUTORIZED",
+        description: error?.message || "you are not authenticated",
+        variant: "destructive"
+      })
+    }
   }
 
   function handleDelete() {
-    deleteTweetMutation();
-    if (isError && error.data?.code === 'UNAUTHORIZED') {
-      toast({
-        title: "UNAUTHORIZED",
-        description: "you does not have admin access to delete",
-        variant: 'destructive'
-      })
-      return;
-    }
+   
   }
 
   return (

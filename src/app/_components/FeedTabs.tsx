@@ -33,25 +33,59 @@ type Tweet = {
 
 export function FeedTabs({ recentTweets, followingPosts, fetchNewTweets, hasMore }: FeedTabsProps) {
     const [activeTab, setActiveTab] = useState("recent")
-    const [loading, setLoading] = useState(true)
     const { user } = useUser();
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false)
-        }, 1500)
-
-        return () => clearTimeout(timer)
-    }, [])
-
     const handleTabChange = (value: string) => {
-        setLoading(true)
         setActiveTab(value)
-
-        setTimeout(() => {
-            setLoading(false)
-        }, 800)
     }
+
+    if(recentTweets == null) return (
+        <>
+        <div className="border-b mb-6">
+                <Tabs>
+                <TabsList className="w-full justify-start h-auto bg-transparent p-0 mb-0">
+                    <TabsTrigger
+                        value="recent"
+                        className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-500 data-[state=active]:text-foreground data-[state=active]:shadow-none rounded-none px-4 py-3 h-auto bg-transparent relative"
+                    >
+                        <div className="flex items-center gap-2">
+                            <Sparkles size={18} />
+                            <span>Recent</span>
+                        </div>
+                        {activeTab === "recent" && (
+                            <motion.div
+                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500"
+                                layoutId="activeTab"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.2}}
+                            />
+                        )}
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="following"
+                        className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-500 data-[state=active]:text-foreground data-[state=active]:shadow-none rounded-none px-4 py-3 h-auto bg-transparent relative"
+                    >
+                        <div className="flex items-center gap-2">
+                            <Users size={18} />
+                            <span>Following</span>
+                        </div>
+                        {activeTab === "following" && (
+                            <motion.div
+                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500"
+                                layoutId="activeTab"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.2 }}
+                            />
+                        )}
+                    </TabsTrigger>
+                </TabsList>
+                </Tabs>
+            </div>
+            <TweetSkeletonList />
+        </>
+    )
 
     return (
         <Tabs defaultValue="recent" className="mb-6" onValueChange={handleTabChange}>
@@ -98,26 +132,15 @@ export function FeedTabs({ recentTweets, followingPosts, fetchNewTweets, hasMore
 
             <TabsContent value="recent" className="m-0">
                 <AnimatePresence mode="wait">
-                    {loading ? (
-                        <motion.div
-                            key="recent-loading"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                        >
-                            <TweetSkeletonList />
-                        </motion.div>
-                    ) : (
                         <motion.div
                             key="recent-loaded"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.2 }}
+                            transition={{ duration: 0.1 }}
                             className="grid gap-6"
                         >
-                            {recentTweets == null || recentTweets.length === 0 ? (
+                            {recentTweets.length === 0 ? (
                                 <div className="text-center py-12 bg-muted/30 rounded-lg border">
                                     <h3 className="text-lg font-medium mb-2">No waves yet</h3>
                                     <p className="text-muted-foreground mb-4">Be the first to create a wave!</p>
@@ -146,24 +169,19 @@ export function FeedTabs({ recentTweets, followingPosts, fetchNewTweets, hasMore
                                 </ul>
                             )}
                         </motion.div>
-                    )}
                 </AnimatePresence>
             </TabsContent>
 
-            {user ? (
-                <TabsContent value="following" className="m-0">
+                {activeTab === 'following' &&  user == null ? (
+                    <div className="text-center py-12 bg-muted/30 rounded-lg border">
+                    <h3 className="text-lg font-medium mb-2">Login to see your followers waves</h3>
+                    <Link href="/login">
+                        <Button variant="destructive">Login</Button>
+                    </Link>
+                </div>
+                ) :(
+                    <TabsContent value="following" className="m-0">
                     <AnimatePresence mode="wait">
-                        {loading ? (
-                            <motion.div
-                                key="following-loading"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <TweetSkeletonList />
-                            </motion.div>
-                        ) : (
                             <motion.div
                                 key="following-loaded"
                                 initial={{ opacity: 0, y: 20 }}
@@ -172,7 +190,7 @@ export function FeedTabs({ recentTweets, followingPosts, fetchNewTweets, hasMore
                                 transition={{ duration: 0.2 }}
                                 className="grid gap-6"
                             >
-                                {recentTweets == null || recentTweets.length === 0 ? (
+                                {recentTweets.length === 0 ? (
                                     <div className="text-center py-12 bg-muted/30 rounded-lg border">
                                         <h3 className="text-lg font-medium mb-2">No waves yet</h3>
                                         <p className="text-muted-foreground mb-4">Be the first to create a wave!</p>
@@ -201,17 +219,9 @@ export function FeedTabs({ recentTweets, followingPosts, fetchNewTweets, hasMore
                                     </ul>
                                 )}
                             </motion.div>
-                        )}
                     </AnimatePresence>
                 </TabsContent>
-            ) : (
-                <div className="text-center py-12 bg-muted/30 rounded-lg border">
-                    <h3 className="text-lg font-medium mb-2">Login to see your followers waves</h3>
-                    <Link href="/login">
-                        <Button variant="destructive">Login</Button>
-                    </Link>
-                </div>
-            )}
+                )}
         </Tabs>
     )
 }

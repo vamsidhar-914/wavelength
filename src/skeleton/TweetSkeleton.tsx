@@ -18,7 +18,7 @@ export function TweetSkeleton() {
         <Skeleton className="h-4 w-3/4" />
 
         {/* Random chance to show image skeleton */}
-        {Math.random() > 0.5 && <Skeleton className="h-[200px] w-full rounded-md mt-3" />}
+        {/* {Math.random() > 0.5 && <Skeleton className="h-[200px] w-full rounded-md mt-3" />} */}
 
         <div className="flex gap-2 mt-3">
           {Math.random() > 0.5 && <Skeleton className="h-5 w-16 rounded-full" />}

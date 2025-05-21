@@ -7,8 +7,8 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 - [x] adminmiddleware done
 - [x] cache update implemented
 - [x] refactored UI code
+- [x] switching tabs logic
 
 ## TODO
 
-- [] switching tabs logic
-- [] follow functionality
+- [] implement follow functionality
