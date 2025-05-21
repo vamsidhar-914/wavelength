@@ -34,8 +34,12 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
 
   const trpcUtils = api.useUtils()
   const { mutate: likeMutation , isError ,error,isSuccess} = api.tweet.toggleLike.useMutation({
+    onMutate({ id }) {
+        toast({
+          title: id
+        })
+    },
     onSuccess: ({ addedLike }) => {
-  
       const updateData: Parameters<typeof trpcUtils.tweet.infiniteFeed.setInfiniteData>[1] = (oldData) => {
         if (oldData == null) {
           return;

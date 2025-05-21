@@ -6,6 +6,7 @@ import cookie from 'cookie'
 
 import { db } from "~/server/db";
 import { getUserSessionById } from "~/app/auth/core/session";
+import { cookies } from "next/headers";
 
 /**
  * 1. CONTEXT
@@ -29,11 +30,11 @@ export interface CreateContextOptions {
 export const createTRPCContext = async (opts: CreateContextOptions) => {
   const { headers,res,req } = opts;
   const cookieHeader = opts.headers.get("cookie") || ""
-  const cookies = cookie?.parse(cookieHeader)
-
+  const cookies = cookie?.parse(cookieHeader);
+  
   let sessionId: string | undefined;
   if(req?.cookies){
-    sessionId = req.cookies.get("session-id")?.value
+    sessionId = cookies["session-id"]
   }else{
     const cookieHeader = headers.get('cookie')
     if(cookieHeader){
