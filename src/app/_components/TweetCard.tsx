@@ -10,78 +10,76 @@ import { Heart, MessageCircle, UserPlus, UserMinus, MoreHorizontal } from "lucid
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { api } from "~/trpc/react"
 import { toast } from "~/hooks/use-toast"
+import type { User } from "~/context/userContext"
 
 type TweetCardProps = {
-    tweet : {
-        content: string
+  tweet: {
+    content: string
     id: string
     createdAt: Date
     likeCount: number
     likedByMe: boolean
     user: {
-        id: string
-        name: string | null
+      id: string
+      name: string | null
     }
-    }
-    currentUserId: {
-        id: string,
-        role: string
-    }
+  }
+  currentUserId: User
 }
 
-export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
+export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
 
-  const isAuthor = currentUserId.id === tweet.user.id
+  const isAuthor = currentUserId?.id === tweet.user.id
   const tweetId = tweet.id;
 
   const trpcUtils = api.useUtils()
   const { mutate: likeMutation } = api.tweet.toggleLike.useMutation({
     onSuccess: ({ addedLike }) => {
-    const updateData: Parameters<typeof trpcUtils.tweet.infiniteFeed.setInfiniteData>[1] = (oldData) => {
-      if(oldData == null){
-        return;
-      }
-      const countModifier = addedLike ? 1 : -1;
+      const updateData: Parameters<typeof trpcUtils.tweet.infiniteFeed.setInfiniteData>[1] = (oldData) => {
+        if (oldData == null) {
+          return;
+        }
+        const countModifier = addedLike ? 1 : -1;
 
-      return {
-        ...oldData,
-        pages: oldData.pages.map((page) => {
-          return {
-            ...page,
-            tweets: page.tweets.map((tweet) => {
-              if(tweet.id === tweetId){
-                return {
-                  ...tweet,
-                  likeCount: tweet.likeCount + countModifier,
-                  likedByMe: addedLike
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => {
+            return {
+              ...page,
+              tweets: page.tweets.map((tweet) => {
+                if (tweet.id === tweetId) {
+                  return {
+                    ...tweet,
+                    likeCount: tweet.likeCount + countModifier,
+                    likedByMe: addedLike
+                  }
                 }
-              }
-              return tweet;
-            })
-          }
-        })
+                return tweet;
+              })
+            }
+          })
+        }
       }
-    }
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
     }
   })
 
-  const { mutate: deleteTweetMutation , isError,error } = api.tweet.adminRoute.useMutation();
+  const { mutate: deleteTweetMutation, isError, error } = api.tweet.adminRoute.useMutation();
 
-  function handleToggle(){
+  function handleToggle() {
     likeMutation({ id: tweet.id })
   }
 
-  function handleDelete(){
+  function handleDelete() {
     deleteTweetMutation();
-    if(isError && error.data?.code === 'UNAUTHORIZED'){
+    if (isError && error.data?.code === 'UNAUTHORIZED') {
       toast({
-          title: "UNAUTHORIZED",
-          description: "you does not have admin access to delete",
-          variant:'destructive'
+        title: "UNAUTHORIZED",
+        description: "you does not have admin access to delete",
+        variant: 'destructive'
       })
       return;
-     }
+    }
   }
 
   return (
@@ -104,11 +102,11 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
             <div className="flex items-center gap-2">
               {!isAuthor && (
                 <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-emerald-600"
+                  variant="ghost"
+                  size="sm"
+                  className="text-emerald-600"
                 >
-                    <span className="sr-only">follow</span>
+                  <span className="sr-only">follow</span>
                 </Button>
               )}
               <DropdownMenu>
@@ -132,7 +130,7 @@ export function TweetCard({ tweet ,currentUserId}: TweetCardProps) {
       </CardContent>
       <CardFooter className="border-t p-2 flex items-center justify-between">
         <Button variant="ghost" size="sm" className={tweet.likedByMe ? "text-rose-500" : ""}
-        onClick={handleToggle}
+          onClick={handleToggle}
         >
           <Heart size={18} className={tweet.likedByMe ? "fill-rose-500" : ""} />
           <span className="ml-1">{tweet.likeCount > 0 ? tweet.likeCount : "0"}</span>

@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { api } from "~/trpc/react";
 
-type User = {
+export type User = {
     id: string
     role: string
 }
