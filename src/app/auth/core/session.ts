@@ -56,6 +56,6 @@ export async function removeUserFromSession(cookies: Pick<Cookies, 'delete' | 'g
     if(sessionId == null){
         return "session id was not found"
     }
-    await redisClient.del(`session:${sessionId}`)
+    await redisClient.del(`session:${JSON.stringify(sessionId)}`)
     cookies.delete(COOKIE_SESSION_KEY);
 }
