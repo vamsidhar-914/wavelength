@@ -1,4 +1,3 @@
-import { getServerSideUser } from "~/lib/user_utils"
 import TabsFeed from "./TabsFeed"
 
 interface FeedTabsProps {
@@ -6,6 +5,10 @@ interface FeedTabsProps {
     followingPosts?: Tweet[]
     hasMore: boolean
     fetchNewTweets: () => Promise<unknown>
+    user: {
+        id: string
+        role: string
+    } | null
 }
 
 type Tweet = {
@@ -20,8 +23,7 @@ type Tweet = {
     }
 }
 
-export  async function FeedTabs({ recentTweets, fetchNewTweets, hasMore }: FeedTabsProps) {
-    const user = await getServerSideUser();
+export function FeedTabs({ recentTweets, fetchNewTweets, hasMore ,user}: FeedTabsProps) {
     return (
         <TabsFeed followingPosts={recentTweets} recentTweets={recentTweets} fetchNewTweets={fetchNewTweets} hasMore={hasMore} user={user} />
     )

@@ -14,20 +14,22 @@ export default function InfiniteTweets({ user }: { user: UserType }) {
         getNextPageParam: lastPage => lastPage.nextCursor,
     });
     return (
-        
-        // <RecentTweets
-        //     user={user}
-        //     tweets={tweets.data?.pages.flatMap((page) => page.tweets)}
-        //     isError={tweets.isError}
-        //     isLoading={tweets.isLoading}
-        //     hasMore={tweets.hasNextPage}
-        //     fetchNewTweets={tweets.fetchNextPage}
+        <>
+        {/* <RecentTweets
+            user={user}
+            tweets={tweets.data?.pages.flatMap((page) => page.tweets)}
+            isError={tweets.isError}
+            isLoading={tweets.isLoading}
+            hasMore={tweets.hasNextPage}
+            fetchNewTweets={tweets.fetchNextPage}
+        /> */}
          <FeedTabs
+                user={user}
               followingPosts={tweets.data?.pages.flatMap((page) => page.tweets)}
               hasMore={tweets.hasNextPage}
               fetchNewTweets={tweets.fetchNextPage}
               recentTweets={tweets.data?.pages.flatMap((page) => page.tweets)}
-
             /> 
+        </>
     )
 }
