@@ -11,9 +11,6 @@ type UserType = {
 export default function InfiniteTweets({ user }: { user: UserType }) {
     const tweets = api.tweet.infiniteFeed.useInfiniteQuery({}, {
         getNextPageParam: lastPage => lastPage.nextCursor,
-        staleTime: 1000 * 60 * 5,
-        refetchOnMount: false,
-        refetchOnWindowFocus: false
     });
     return (
         <RecentTweets

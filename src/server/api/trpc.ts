@@ -7,6 +7,7 @@ import cookie from 'cookie'
 import { db } from "~/server/db";
 import { getUserSessionById } from "~/app/auth/core/session";
 import { cookies } from "next/headers";
+import { getServerSideUser } from "~/lib/user_utils";
 
 /**
  * 1. CONTEXT
@@ -32,36 +33,39 @@ export const createTRPCContext = async (opts: CreateContextOptions) => {
   const cookieHeader = opts.headers.get("cookie") || ""
   const cookies = cookie?.parse(cookieHeader);
   
-  let sessionId: string | undefined;
-  if(req?.cookies){
-    sessionId = cookies["session-id"]
-  }else{
-    const cookieHeader = headers.get('cookie')
-    if(cookieHeader){
-      const cookies = cookieHeader.split(";")
-      for(const cookie of cookies){
-        const [name,value] = cookie.trim().split("=")
-        if(name === "session-id"){
-          sessionId = value;
-        }
-      }
-    }
-  }
+  // let sessionId: string | undefined;
+  // if(req?.cookies){
+  //   sessionId = cookies["session-id"]
+  // }else{
+  //   const cookieHeader = headers.get('cookie')
+  //   if(cookieHeader){
+  //     const cookies = cookieHeader.split(";")
+  //     for(const cookie of cookies){
+  //       const [name,value] = cookie.trim().split("=")
+  //       if(name === "session-id"){
+  //         sessionId = value;
+  //       }
+  //     }
+  //   }
+  // }
 
-  let user = null;
-  let isAdmin = false
-  if(sessionId){
-    try{
-        user = await getUserSessionById(sessionId);
-        if(user?.role === 'ADMIN'){
-          isAdmin = true
-        }else{
-          isAdmin = false
-        }
-    }catch(error){
-      console.log("error fetching user session:", error);
-    }
-  }
+  // let user = null;
+  // let isAdmin = false
+  // if(sessionId){
+  //   try{
+  //       user = await getUserSessionById(sessionId);
+  //       if(user?.role === 'ADMIN'){
+  //         isAdmin = true
+  //       }else{
+  //         isAdmin = false
+  //       }
+  //   }catch(error){
+  //     console.log("error fetching user session:", error);
+  //   }
+  // }
+
+  const user = await getServerSideUser();
+  const isAdmin = user?.role
 
   return {
     isAdmin,
