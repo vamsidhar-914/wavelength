@@ -30,7 +30,7 @@ export interface CreateContextOptions {
 
 export const createTRPCContext = async (opts: CreateContextOptions) => {
   const { headers,res,req } = opts;
-  const cookieHeader = opts.headers.get("cookie") || ""
+  const cookieHeader = opts.headers.get("cookie") ?? ""
   const cookies = cookie?.parse(cookieHeader);
   
   // let sessionId: string | undefined;

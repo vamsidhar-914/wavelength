@@ -84,10 +84,6 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
     }
   }
 
-  function handleDelete() {
-   
-  }
-
   return (
     <Card className="overflow-hidden mb-4">
       <CardHeader className="flex flex-row items-center gap-4 p-4">
@@ -123,7 +119,7 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleDelete}>{isAuthor ? "Delete wave" : "Report wave"}</DropdownMenuItem>
+                  <DropdownMenuItem>{isAuthor ? "Delete wave" : "Report wave"}</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
