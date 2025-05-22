@@ -10,7 +10,11 @@ import { Heart, MessageCircle, UserPlus, UserMinus, MoreHorizontal } from "lucid
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { api } from "~/trpc/react"
 import { toast } from "~/hooks/use-toast"
-import type { User } from "~/context/userContext"
+
+type User = {
+    id: string
+    role: string
+} | null
 
 type TweetCardProps = {
   tweet: {
