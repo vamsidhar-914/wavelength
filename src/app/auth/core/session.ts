@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { z } from "zod";
 import crypto from 'crypto'
 import { redisClient } from "~/redis/redis";

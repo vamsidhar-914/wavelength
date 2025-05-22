@@ -5,8 +5,6 @@ import { ZodError } from "zod";
 import cookie from 'cookie'
 
 import { db } from "~/server/db";
-import { getUserSessionById } from "~/app/auth/core/session";
-import { cookies } from "next/headers";
 import { getServerSideUser } from "~/lib/user_utils";
 
 /**

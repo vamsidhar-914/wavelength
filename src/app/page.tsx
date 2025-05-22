@@ -4,6 +4,7 @@ import InfiniteTweets from "./_components/InfiniteTweets";
 import { getServerSideUser } from "~/lib/user_utils";
 
 export default async function Home() {
+
   const user = await getServerSideUser();
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/95 dark:from-background dark:to-background/95">

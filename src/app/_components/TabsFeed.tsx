@@ -8,6 +8,7 @@ import { TweetCard } from "./TweetCard"
 import InfiniteScroll from "react-infinite-scroll-component"
 import Link from "next/link"
 import { Button } from "~/components/ui/button"
+import { TweetSkeletonList } from "~/skeleton/TweetSkeleton"
 
 type TabsFeedType = {
     recentTweets?: Tweet[]
@@ -33,61 +34,13 @@ type Tweet = {
 }
 
 export default function TabsFeed({ recentTweets, user, fetchNewTweets, hasMore }: TabsFeedType) {
-
     const [activeTab, setActiveTab] = useState("recent")
 
     const handleTabChange = (value: string) => {
         setActiveTab(value)
     }
 
-
-    if (recentTweets == null) return (
-        <>
-            {/* <div className="border-b mb-6">
-                <Tabs>
-                <TabsList className="w-full justify-start h-auto bg-transparent p-0 mb-0">
-                    <TabsTrigger
-                        value="recent"
-                        className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-500 data-[state=active]:text-foreground data-[state=active]:shadow-none rounded-none px-4 py-3 h-auto bg-transparent relative"
-                    >
-                        <div className="flex items-center gap-2">
-                            <Sparkles size={18} />
-                            <span>Recent</span>
-                        </div>
-                        {activeTab === "recent" && (
-                            <motion.div
-                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500"
-                                layoutId="activeTab"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.2}}
-                            />
-                        )}
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="following"
-                        className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-500 data-[state=active]:text-foreground data-[state=active]:shadow-none rounded-none px-4 py-3 h-auto bg-transparent relative"
-                    >
-                        <div className="flex items-center gap-2">
-                            <Users size={18} />
-                            <span>Following</span>
-                        </div>
-                        {activeTab === "following" && (
-                            <motion.div
-                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500"
-                                layoutId="activeTab"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.2 }}
-                            />
-                        )}
-                    </TabsTrigger>
-                </TabsList>
-                </Tabs>
-            </div>
-        <TweetSkeletonList /> */}
-            loading...
-        </>)
+    if (recentTweets == null) return <TweetSkeletonList />
 
     return (
         <Tabs defaultValue="recent" className="mb-6" onValueChange={handleTabChange}>
