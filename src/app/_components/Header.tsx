@@ -8,6 +8,8 @@ import { SearchBar } from "./SearchBar";
 import { ThemeToggle } from "./theme-toggle";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Bell } from "lucide-react";
+import { useSession ,signIn,signOut } from "next-auth/react";
+import { authOptions } from "../api/auth/[...nextauth]/route"
 
 export default function Header() {
   const { user: data, isLoading, refetch } = useUser()
@@ -42,9 +44,9 @@ export default function Header() {
             <UserNav user={data} />
           ) : (
             <div className="flex items-center gap-4">
-              <Link href="/login">
-                <Button variant="ghost">Log in</Button>
-              </Link>
+            
+                <Button variant="ghost" onClick={() => signIn()}>Log in</Button>
+      
               <Link href="/signup">
                 <Button className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:text-white">
                   Sign up

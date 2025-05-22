@@ -5,6 +5,7 @@ import Header from "./_components/Header";
 import RecentTweets from "./_components/RecentTweets";
 import { TrendingTopics } from "./_components/TrendingTopics";
 import { FeedTabs } from "./_components/FeedTabs";
+import { SessionProvider } from "next-auth/react";
 
 export default function Home() {
   const tweets = api.tweet.infiniteFeed.useInfiniteQuery({}, {
@@ -14,7 +15,8 @@ export default function Home() {
     refetchOnWindowFocus: false
   });
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/95 dark:from-background dark:to-background/95">
+    <SessionProvider>
+      <div className="min-h-screen bg-gradient-to-b from-background to-background/95 dark:from-background dark:to-background/95">
       <Header />
       <main className="container py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -42,5 +44,6 @@ export default function Home() {
         </div>
       </main>
     </div>
+    </SessionProvider>
   );
 }

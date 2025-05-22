@@ -8,6 +8,7 @@ import { Toaster } from "~/utils/Toaste";
 import { UserProvider } from "~/context/userContext";
 import { ThemeProvider } from "./_components/theme-provider";
 import { useTheme } from "next-themes";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={geist.className}>
         <TRPCReactProvider>
+       
           <UserProvider>
           <ThemeProvider defaultTheme="dark">
             {children}
