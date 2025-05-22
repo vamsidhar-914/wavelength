@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import { TweetCard } from "./TweetCard";
-import { api } from "~/trpc/react";
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { TweetSkeletonList } from "~/skeleton/TweetSkeleton";
 

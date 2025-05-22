@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import crypto from 'crypto'
 import { redisClient } from "~/redis/redis";
+import { getSessionCookie } from "~/lib/user_utils";
 
 const sessionSchema = z.object({
     id: z.string(),
@@ -51,7 +52,11 @@ export async function getUserSessionById(sessionId: string){
     return success ? user : null;
 }
 
-export async function removeUserFromSession(cookies: Pick<Cookies, 'delete' | 'get'>, sessionId: string){
+export async function removeUserFromSession(cookies: Pick<Cookies, 'delete' | 'get'>){
+    const sessionId = getSessionCookie();
+    if(sessionId == null){
+        return "session id was not found"
+    }
     await redisClient.del(`session:${sessionId}`)
     cookies.delete(COOKIE_SESSION_KEY);
 }

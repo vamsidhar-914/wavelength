@@ -11,3 +11,12 @@ export const getServerSideUser = async () => {
     const user = getUserSessionById(sessionId);
     return user;
 }
+
+export const getSessionCookie = async () => {
+    const nextCookies = await cookies()
+    const sessionId = nextCookies.get("session-id")?.value
+    if(sessionId == null){
+        return null
+    }
+    return sessionId
+}

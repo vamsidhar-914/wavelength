@@ -32,7 +32,7 @@ type Tweet = {
     }
 }
 
-export default function TabsFeed({ recentTweets, user, followingPosts, fetchNewTweets, hasMore }: TabsFeedType) {
+export default function TabsFeed({ recentTweets, user, fetchNewTweets, hasMore }: TabsFeedType) {
 
     const [activeTab, setActiveTab] = useState("recent")
 
@@ -163,7 +163,7 @@ export default function TabsFeed({ recentTweets, user, followingPosts, fetchNewT
                                         <TweetCard
                                             key={tweet.id}
                                             tweet={tweet}
-                                            currentUserId={user!}
+                                            currentUserId={user}
                                         />
                                     ))}
 
@@ -213,7 +213,7 @@ export default function TabsFeed({ recentTweets, user, followingPosts, fetchNewT
                                             <TweetCard
                                                 key={tweet.id}
                                                 tweet={tweet}
-                                                currentUserId={user!}
+                                                currentUserId={user}
                                             />
                                         ))}
 

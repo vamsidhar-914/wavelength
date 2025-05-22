@@ -20,7 +20,7 @@ type Tweet = {
     }
 }
 
-export  async function FeedTabs({ recentTweets, followingPosts, fetchNewTweets, hasMore }: FeedTabsProps) {
+export  async function FeedTabs({ recentTweets, fetchNewTweets, hasMore }: FeedTabsProps) {
     const user = await getServerSideUser();
     return (
         <TabsFeed followingPosts={recentTweets} recentTweets={recentTweets} fetchNewTweets={fetchNewTweets} hasMore={hasMore} user={user} />

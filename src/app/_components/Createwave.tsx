@@ -18,8 +18,8 @@ export default function Createwave({ user }: { user: UserType }) {
 
     const trpcUtils = api.useUtils();
 
-    const { mutate: tweetMutation, isPending, isError, error } = api.tweet.create.useMutation({
-        onSuccess(data, variables, context) {
+    const { mutate: tweetMutation, isPending, error } = api.tweet.create.useMutation({
+        onSuccess(data) {
             trpcUtils.tweet.infiniteFeed.setInfiniteData({}, (oldData) => {
                 if (oldData == null || oldData.pages[0] == null) {
                     return;

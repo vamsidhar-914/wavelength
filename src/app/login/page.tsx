@@ -13,7 +13,7 @@ import { api } from "~/trpc/react"
 
 export default function LoginPage(){
     
-    const [loginError , setLoginError] = useState<String>("") 
+    const [loginError , setLoginError] = useState<string>("") 
 
     const [formData, setFormData] = useState({
         email: "",

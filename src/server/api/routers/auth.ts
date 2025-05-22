@@ -78,11 +78,7 @@ export const authRouter = createTRPCRouter({
         }),
     logout: publicProcedure
         .mutation(async ({ ctx }) => {
-            const sessionId = ctx.cookies[COOKIE_SESSION_KEY];
-            if (sessionId == null) {
-                return "sessionId not found"
-            }
-            await removeUserFromSession(await cookies(), sessionId)
+            await removeUserFromSession(await cookies())
             return "loggedout successfully"
         }),
 })
