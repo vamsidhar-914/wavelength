@@ -1,7 +1,6 @@
 "use client"
 
 import { api } from "~/trpc/react";
-import RecentTweets from "./RecentTweets";
 import { FeedTabs } from "./FeedTabs";
 
 type UserType = {

@@ -52,24 +52,20 @@ export default function Createwave({ user }: { user: UserType }) {
             })
             router.push("/")
         },
-        onError(error) {
-            console.log("api failed", error);
-        }
+         onError(error, variables, context) {
+                if(error.data?.code === 'UNAUTHORIZED'){
+                  toast({
+                    title: "UNAUTHORIZED",
+                    description: "You need to login to create a wave",
+                    variant: 'destructive'
+                  })
+                }
+            },
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        // implement create post mutation
         tweetMutation({ content })
-
-        if (error && error.data?.code === 'UNAUTHORIZED') {
-            toast({
-                title: "UNAUTHORIZED",
-                description: "you are not authenticated to create a tweet, please Login/Register",
-                variant: 'destructive'
-            })
-            return;
-        }
 
     }
     return (

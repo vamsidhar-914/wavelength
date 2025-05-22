@@ -70,18 +70,20 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         }
       }
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
-    }
+    },
+    onError(error, variables, context) {
+        if(error.data?.code === 'UNAUTHORIZED'){
+          toast({
+            title: "UNAUTHORIZED",
+            description: "You need to login to like",
+            variant: 'destructive'
+          })
+        }
+    },
   })
 
   function handleToggle() {
      likeMutation({ id: tweet.id })
-    if(isError && error){
-      toast({
-        title: "UNAUTORIZED",
-        description: error?.message || "you are not authenticated",
-        variant: "destructive"
-      })
-    }
   }
 
   return (
