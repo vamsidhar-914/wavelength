@@ -1,17 +1,12 @@
 import { WaveIcon } from "./wave-icon";
 import { Button } from "~/components/ui/button";
-import { useEffect, useState } from "react";
-import { useUser } from "~/context/userContext";
 import Link from "next/link";
 import { UserNav } from "./UserNav";
 import { SearchBar } from "./SearchBar";
-import { ThemeToggle } from "./theme-toggle";
-import { Skeleton } from "~/components/ui/skeleton";
-import { Bell } from "lucide-react";
+import { getServerSideUser } from "~/lib/user_utils";
 
-export default function Header() {
-  const { user: data, isLoading, refetch } = useUser()
-
+export default async function Header() {
+  const data = await getServerSideUser();
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3">
       <div className="containe  r flex h-16 items-center justify-between">
@@ -26,19 +21,7 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-4">
           {/* <ThemeToggle />  */}
-          {isLoading ? (
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-1 right-1 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span className="sr-only">Notifications</span>
-              </Button>
-              <Skeleton className="h-10 w-10 rounded-full" />
-            </div>
-          ) : data ? (
+          {data ? (
             <UserNav user={data} />
           ) : (
             <div className="flex items-center gap-4">

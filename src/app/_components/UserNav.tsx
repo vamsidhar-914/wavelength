@@ -16,7 +16,6 @@ import { User, Settings, LogOut, Bell } from "lucide-react"
 import { api } from "~/trpc/react"
 import { toast } from "~/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import { useUser } from "~/context/userContext"
 
 interface UserNavProps {
   user: {
@@ -26,22 +25,22 @@ interface UserNavProps {
 }
 
 export function UserNav({ user }: UserNavProps) {
-    const {refetch  } = useUser();
-     
-    const { mutate } = api.auth.logout.useMutation({
-        onSuccess(data, variables, context) {
-            toast({
-              title: "user logged out",
-              description: data,
-              variant: "destructive"
-          })
-          refetch()
-        },
+  const router = useRouter()
+
+  const { mutate } = api.auth.logout.useMutation({
+    onSuccess(data, variables, context) {
+      router.refresh();
+      toast({
+        title: "user logged out",
+        description: data,
+        variant: "destructive"
       })
-    
-      function handleLogout(){
-        mutate(); 
-      }
+    },
+  })
+
+  function handleLogout() {
+    mutate();
+  }
 
   return (
     <div className="flex items-center gap-4">
@@ -86,10 +85,10 @@ export function UserNav({ user }: UserNavProps) {
             </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { useUser } from "~/context/userContext";
 import { TweetCard } from "./TweetCard";
 import { api } from "~/trpc/react";
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -23,11 +22,14 @@ type InfiniteTweetListProps = {
   isError: boolean
   hasMore: boolean
   fetchNewTweets: () => Promise<unknown>
-  tweets?: Tweet[]
+  tweets?: Tweet[],
+  user: {
+    id: string
+    role: string
+  } | null
 }
 
-export default function RecentTweets({ tweets, isLoading, isError, hasMore, fetchNewTweets }: InfiniteTweetListProps) {
-  const { data: user } = api.user.getCurrentUser.useQuery();
+export default function RecentTweets({ tweets, isLoading, isError, hasMore, fetchNewTweets, user }: InfiniteTweetListProps) {
 
   if (isLoading) return <TweetSkeletonList />
 
