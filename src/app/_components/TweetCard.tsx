@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { formatDistanceToNow } from "date-fns"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
@@ -37,7 +36,7 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
   const tweetId = tweet.id;
 
   const trpcUtils = api.useUtils()
-  const { mutate: likeMutation , isError ,error,isSuccess} = api.tweet.toggleLike.useMutation({
+  const { mutate: likeMutation} = api.tweet.toggleLike.useMutation({
     onMutate({ id }) {
         toast({
           title: id
@@ -71,7 +70,7 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
       }
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
     },
-    onError(error, variables, context) {
+    onError(error) {
         if(error.data?.code === 'UNAUTHORIZED'){
           toast({
             title: "UNAUTHORIZED",
@@ -81,9 +80,59 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         }
     },
   })
+  const { mutate: deleteMutation } = api.tweet.deleteWave.useMutation({
+    onSuccess(data, variables) {
+      if(!data.isDeleted){
+        toast({
+          title: "permission denied",
+          description: "you does not have permission to delete others wave",
+          variant: 'destructive'
+        })
+        return
+      }
+      const updateData: Parameters<typeof trpcUtils.tweet.infiniteFeed.setInfiniteData>[1] = (oldData) => {
+        if(oldData == null){
+          return;
+        }
+        const tweetId = variables.tweetId;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => {
+            return {
+              ...page,
+              tweets: page.tweets.filter((tweet) => tweet.id !== tweetId)
+            }
+          })
+        }
+      }
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({} , updateData)
+      toast({
+        title: "Deleted wave",
+        description: "wave got succesfully deleted",
+        variant: "default"
+      })
+    },
+    onError(error) {
+       if(error.data?.code === 'UNAUTHORIZED'){
+        toast({
+          title: "UNAUTHORIZED",
+          description: "You are not authorized to delete/report wave",
+          variant: "destructive"
+        })
+       }
+    },
+  })
 
   function handleToggle() {
      likeMutation({ id: tweet.id })
+  }
+
+  function handleDelete(){
+    deleteMutation({ createdAt: tweet.createdAt,tweetId: tweet.id, isAuthor })
+  }
+
+  function handleReport(){
+    console.log("reported")
   }
 
   return (
@@ -121,7 +170,11 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>{isAuthor ? "Delete wave" : "Report wave"}</DropdownMenuItem>
+                  {isAuthor ? (
+                    <DropdownMenuItem onClick={handleDelete}>Delete wave</DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem onClick={handleReport}>Report wave</DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
