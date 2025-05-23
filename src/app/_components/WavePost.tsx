@@ -86,7 +86,7 @@ export function WavePost({ waveId, user }: WavePostType) {
           {comments?.comments.length === 0 ? (
             <h1>no comments found for this wave</h1>
           ) : (
-            comments?.comments.map((comment) => <h1>{comment.content}</h1>)
+            comments?.comments.map((comment) => <h1 key={comment.id}>{comment.content}</h1>)
           )}
         </div>
       </div>
