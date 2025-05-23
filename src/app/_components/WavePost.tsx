@@ -25,6 +25,14 @@ export function WavePost({ waveId, user }: WavePostType) {
       refetchOnWindowFocus: false,
     },
   );
+  const { data: comments,error: commentsError } = api.comment.getCommentsByWaveId.useQuery(
+    { waveId },
+    {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  );
+
   if (isLoading)
     return (
       <div className="container max-w-2xl py-6">
@@ -51,6 +59,16 @@ export function WavePost({ waveId, user }: WavePostType) {
 
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Responses</h2>
+        <div className="mt-6">
+            {commentsError?.data?.code === 'UNAUTHORIZED'  && (
+                <h1>Please login to see the comments</h1>
+            )}
+          {comments?.comments.length === 0 ? (
+            <h1>no comments found for this wave</h1>
+          ) : (
+            comments?.comments.map((comment) => <h1>{comment.content}</h1>)
+          )}
+        </div>
       </div>
     </div>
   );
