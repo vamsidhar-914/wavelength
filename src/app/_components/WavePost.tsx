@@ -6,6 +6,8 @@ import { Button } from "~/components/ui/button";
 import { TweetCard } from "./TweetCard";
 import { api } from "~/trpc/react";
 import { TweetSkeleton } from "~/skeleton/TweetSkeleton";
+import { CommentForm } from "./commentForm";
+import { toast } from "~/hooks/use-toast";
 
 type User = {
   id: string;
@@ -18,14 +20,15 @@ type WavePostType = {
 };
 
 export function WavePost({ waveId, user }: WavePostType) {
+  const { data: comments, error: commentsError } =
+    api.comment.getCommentsByWaveId.useQuery(
+      { waveId },
+      {
+        retry: false,
+        refetchOnWindowFocus: false,
+      },
+    );
   const { data, isLoading, error, isError } = api.tweet.getWaveById.useQuery(
-    { waveId },
-    {
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
-  );
-  const { data: comments,error: commentsError } = api.comment.getCommentsByWaveId.useQuery(
     { waveId },
     {
       retry: false,
@@ -46,6 +49,13 @@ export function WavePost({ waveId, user }: WavePostType) {
       </div>
     );
   }
+  if (commentsError?.data?.code === "UNAUTHORIZED") {
+    toast({
+      title: "Please login",
+      description: commentsError.message,
+      variant: "destructive",
+    });
+  }
   return (
     <div className="container max-w-2xl py-6">
       <Link href="/" className="inline-flex items-center mb-6">
@@ -59,10 +69,20 @@ export function WavePost({ waveId, user }: WavePostType) {
 
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Responses</h2>
+        {user ? (
+          <CommentForm waveId={waveId} />
+        ) : (
+          <div className="bg-muted/30 p-4 rounded-lg text-center mb-6">
+            <p className="mb-2">Sign in to join the conversation</p>
+            <Link href="/login">
+              <Button variant="outline" size="sm">
+                Log in
+              </Button>
+            </Link>
+          </div>
+        )}
+
         <div className="mt-6">
-            {commentsError?.data?.code === 'UNAUTHORIZED'  && (
-                <h1>Please login to see the comments</h1>
-            )}
           {comments?.comments.length === 0 ? (
             <h1>no comments found for this wave</h1>
           ) : (

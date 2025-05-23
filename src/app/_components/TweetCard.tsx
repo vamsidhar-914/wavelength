@@ -260,7 +260,7 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
           {formatDistanceToNow(tweet.createdAt, { addSuffix: true })}
         </p>
       </CardContent>
-      <CardFooter className="border-t p-2 flex items-center justify-between">
+      <CardFooter className="border-t p-2 flex items-center">
         <Button
           variant="ghost"
           size="sm"
@@ -273,7 +273,7 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
           </span>
           <span className="sr-only">Resonance</span>
         </Button>
-        <Link href={`/post/${tweet.id}`}>
+        <Link href={`/wave/${tweet.id}`}>
           <Button variant="ghost" size="sm">
             <MessageCircle size={18} />
             {/* <span className="ml-1">{tweets.comments > 0 ? tweets.comments : ""}</span> */}
