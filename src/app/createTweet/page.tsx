@@ -1,6 +1,5 @@
-
-import type React from "react"
-import { getServerSideUser } from "~/lib/user_utils"
+import type React from "react";
+import { getServerSideUser } from "~/lib/user_utils";
 import Createwave from "../_components/Createwave";
 
 export default async function CreatePost() {
@@ -11,5 +10,5 @@ export default async function CreatePost() {
       <h1 className="text-2xl font-bold mb-6">Create a new wave</h1>
       <Createwave user={user} />
     </div>
-  )
+  );
 }

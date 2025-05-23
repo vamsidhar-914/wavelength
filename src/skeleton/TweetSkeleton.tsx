@@ -1,5 +1,10 @@
-import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card"
-import { Skeleton } from "~/components/ui/skeleton"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "~/components/ui/card";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export function TweetSkeleton() {
   return (
@@ -21,8 +26,12 @@ export function TweetSkeleton() {
         {/* {Math.random() > 0.5 && <Skeleton className="h-[200px] w-full rounded-md mt-3" />} */}
 
         <div className="flex gap-2 mt-3">
-          {Math.random() > 0.5 && <Skeleton className="h-5 w-16 rounded-full" />}
-          {Math.random() > 0.5 && <Skeleton className="h-5 w-16 rounded-full" />}
+          {Math.random() > 0.5 && (
+            <Skeleton className="h-5 w-16 rounded-full" />
+          )}
+          {Math.random() > 0.5 && (
+            <Skeleton className="h-5 w-16 rounded-full" />
+          )}
         </div>
 
         <Skeleton className="h-3 w-[100px] mt-2" />
@@ -33,7 +42,7 @@ export function TweetSkeleton() {
         <Skeleton className="h-8 w-16" />
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 export function TweetSkeletonList() {
@@ -43,5 +52,5 @@ export function TweetSkeletonList() {
         <TweetSkeleton key={index} />
       ))}
     </div>
-  )
+  );
 }

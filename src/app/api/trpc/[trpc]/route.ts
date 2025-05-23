@@ -13,16 +13,16 @@ const createContext = async (req: NextRequest, res: Response) => {
   return createTRPCContext({
     headers: req.headers,
     req,
-    res
+    res,
   });
 };
 
-const handler = (req: NextRequest,res: Response) =>
+const handler = (req: NextRequest, res: Response) =>
   fetchRequestHandler({
     endpoint: "/api/trpc",
     req,
     router: appRouter,
-    createContext: () => createContext(req,res),
+    createContext: () => createContext(req, res),
     onError:
       env.NODE_ENV === "development"
         ? ({ path, error }) => {

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
-import { Button } from "~/components/ui/button"
-import { TrendingUp, RefreshCw } from "lucide-react"
-import { motion } from "framer-motion"
+import { useState } from "react";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+import { TrendingUp, RefreshCw } from "lucide-react";
+import { motion } from "framer-motion";
 
 // Mock trending topics data
 const trendingTopicsData = [
@@ -14,21 +14,21 @@ const trendingTopicsData = [
   { id: 3, name: "productivity", count: 1245 },
   { id: 4, name: "creativity", count: 987 },
   { id: 5, name: "future", count: 754 },
-]
+];
 
 export function TrendingTopics() {
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [trendingTopics, setTrendingTopics] = useState(trendingTopicsData)
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [trendingTopics, setTrendingTopics] = useState(trendingTopicsData);
 
   const handleRefresh = () => {
-    setIsRefreshing(true)
+    setIsRefreshing(true);
     // Simulate refreshing data
     setTimeout(() => {
       // Shuffle the array to simulate new trending topics
-      setTrendingTopics([...trendingTopics].sort(() => Math.random() - 0.5))
-      setIsRefreshing(false)
-    }, 1000)
-  }
+      setTrendingTopics([...trendingTopics].sort(() => Math.random() - 0.5));
+      setIsRefreshing(false);
+    }, 1000);
+  };
 
   return (
     <Card className="border-muted/40 dark:border-muted/20 bg-card/50 backdrop-blur-sm">
@@ -37,8 +37,15 @@ export function TrendingTopics() {
           <TrendingUp className="h-5 w-5 text-emerald-500" />
           Trending Topics
         </CardTitle>
-        <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
-          <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw
+            className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+          />
           <span className="sr-only">Refresh</span>
         </Button>
       </CardHeader>
@@ -54,11 +61,15 @@ export function TrendingTopics() {
             >
               <Link href={`/topic/${topic.name}`} className="hover:underline">
                 <div className="flex items-center gap-2">
-                  <span className="text-muted-foreground font-medium">{index + 1}</span>
+                  <span className="text-muted-foreground font-medium">
+                    {index + 1}
+                  </span>
                   <span className="font-medium">#{topic.name}</span>
                 </div>
               </Link>
-              <span className="text-sm text-muted-foreground">{topic.count.toLocaleString()} waves</span>
+              <span className="text-sm text-muted-foreground">
+                {topic.count.toLocaleString()} waves
+              </span>
             </motion.div>
           ))}
         </div>
@@ -72,7 +83,7 @@ export function TrendingTopics() {
             </Button>
           </Link>
           <a href="/createTweet">
-          <Button
+            <Button
               variant="link"
               className="p-0 h-auto text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
             >
@@ -82,5 +93,5 @@ export function TrendingTopics() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

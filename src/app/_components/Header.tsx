@@ -11,7 +11,10 @@ export default async function Header() {
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3">
       <div className="containe  r flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2 transition-all hover:opacity-80">
+          <Link
+            href="/"
+            className="flex items-center gap-2 transition-all hover:opacity-80"
+          >
             <WaveIcon className="h-8 w-8 text-emerald-500" />
             <h1 className="text-2xl font-bold">Wavelength</h1>
           </Link>
@@ -38,5 +41,5 @@ export default async function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
