@@ -55,8 +55,8 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           fetch(url, options) {
             return fetch(url, {
               ...options,
-              credentials: 'include',
-            })
+              credentials: "include",
+            });
           },
           headers: () => {
             const headers = new Headers();

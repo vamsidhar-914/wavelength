@@ -2,7 +2,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import type { NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import cookie from 'cookie'
+import cookie from "cookie";
 
 import { db } from "~/server/db";
 import { getServerSideUser } from "~/lib/user_utils";
@@ -21,16 +21,16 @@ import { getServerSideUser } from "~/lib/user_utils";
  */
 
 export interface CreateContextOptions {
-  headers: Headers,
-  req?: NextRequest,
-  res?: Response
+  headers: Headers;
+  req?: NextRequest;
+  res?: Response;
 }
 
 export const createTRPCContext = async (opts: CreateContextOptions) => {
-  const { headers,res,req } = opts;
-  const cookieHeader = opts.headers.get("cookie") ?? ""
+  const { headers, res, req } = opts;
+  const cookieHeader = opts.headers.get("cookie") ?? "";
   const cookies = cookie?.parse(cookieHeader);
-  
+
   // let sessionId: string | undefined;
   // if(req?.cookies){
   //   sessionId = cookies["session-id"]
@@ -63,7 +63,7 @@ export const createTRPCContext = async (opts: CreateContextOptions) => {
   // }
 
   const user = await getServerSideUser();
-  const isAdmin = user?.role
+  const isAdmin = user?.role;
 
   return {
     isAdmin,
@@ -72,7 +72,7 @@ export const createTRPCContext = async (opts: CreateContextOptions) => {
     headers,
     user,
     req,
-    res
+    res,
   };
 };
 
@@ -125,36 +125,36 @@ export const createTRPCRouter = t.router;
  * network latency that would occur in production but not in local development.
  */
 
-const protectedMiddleware = t.middleware(async ({ ctx,next }) => {
-  if(!ctx.user){
+const protectedMiddleware = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.user) {
     throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: "you are not authenticated"
-    })
+      code: "UNAUTHORIZED",
+      message: "you are not authenticated",
+    });
   }
 
   return next({
     ctx: {
       ...ctx,
-      user: ctx.user
-    }
-  })
-})
+      user: ctx.user,
+    },
+  });
+});
 
-const adminMiddleware = t.middleware(async ({ ctx,next }) => {
-  if(!ctx.isAdmin){
+const adminMiddleware = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.isAdmin) {
     throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: "you does not have admin access"
-    })
+      code: "UNAUTHORIZED",
+      message: "you does not have admin access",
+    });
   }
   return next({
     ctx: {
       ...ctx,
-      isAdmin: ctx.isAdmin
-    }
-  })
-})
+      isAdmin: ctx.isAdmin,
+    },
+  });
+});
 
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();

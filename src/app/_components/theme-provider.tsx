@@ -1,78 +1,84 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "dark" | "light"
+type Theme = "dark" | "light";
 
 type ThemeProviderProps = {
-  children: React.ReactNode
-  defaultTheme?: Theme
-}
+  children: React.ReactNode;
+  defaultTheme?: Theme;
+};
 
 type ThemeProviderState = {
-  theme: Theme
-  setTheme: (theme: Theme) => void
-  transitioning: boolean
-}
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  transitioning: boolean;
+};
 
 const initialState: ThemeProviderState = {
   theme: "dark",
   setTheme: () => null,
   transitioning: false,
-}
+};
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
-export function ThemeProvider({ children, defaultTheme = "dark" }: ThemeProviderProps) {
+export function ThemeProvider({
+  children,
+  defaultTheme = "dark",
+}: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(defaultTheme);
-  const [mounted ,setMounted] = useState(false);
-  const [ transitioning, setTransitioning ] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") as Theme;
-    if(storedTheme){
+    if (storedTheme) {
       setTheme(storedTheme);
       document.documentElement.classList.add(storedTheme);
-    }else{
+    } else {
       document.documentElement.classList.add(defaultTheme);
     }
     setMounted(true);
-  },[defaultTheme])
-  
+  }, [defaultTheme]);
 
   useEffect(() => {
-    if(!mounted) return;
-    const root = document.documentElement
-    root.classList.remove("light", "dark")
-    root.classList.add(theme)
-    localStorage.setItem("theme",theme);
-  }, [theme,mounted])
+    if (!mounted) return;
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme, mounted]);
 
-  if(!mounted) return null;
+  if (!mounted) return null;
 
   const value = {
     theme,
     setTheme: (theme: Theme) => {
       setTransitioning(true);
       setTimeout(() => {
-        setTheme(theme)
+        setTheme(theme);
         setTimeout(() => {
           setTransitioning(false);
-        },500)
+        }, 500);
       }, 300);
     },
-    transitioning
-  }
+    transitioning,
+  };
 
-  return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>
+  return (
+    <ThemeProviderContext.Provider value={value}>
+      {children}
+    </ThemeProviderContext.Provider>
+  );
 }
 
 export const useTheme = () => {
-  const context = useContext(ThemeProviderContext)
+  const context = useContext(ThemeProviderContext);
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider")
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
-  return context
-}
+  return context;
+};

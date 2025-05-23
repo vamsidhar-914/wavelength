@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { Button } from "~/components/ui/button"
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,21 +11,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { User, Settings, LogOut, Bell } from "lucide-react"
-import { api } from "~/trpc/react"
-import { toast } from "~/hooks/use-toast"
-import { useRouter } from "next/navigation"
+} from "~/components/ui/dropdown-menu";
+import { User, Settings, LogOut, Bell } from "lucide-react";
+import { api } from "~/trpc/react";
+import { toast } from "~/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface UserNavProps {
   user: {
-    id: string
-    role: string
-  }
+    id: string;
+    role: string;
+  };
 }
 
 export function UserNav({ user }: UserNavProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   const { mutate } = api.auth.logout.useMutation({
     onSuccess(data, variables, context) {
@@ -33,10 +33,10 @@ export function UserNav({ user }: UserNavProps) {
       toast({
         title: "user logged out",
         description: data,
-        variant: "destructive"
-      })
+        variant: "destructive",
+      });
     },
-  })
+  });
 
   function handleLogout() {
     mutate();
@@ -57,7 +57,10 @@ export function UserNav({ user }: UserNavProps) {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-10 w-10 rounded-full">
             <Avatar className="h-10 w-10 border">
-              <AvatarImage src={"https://github.com/shadcn.png"} alt={user.id} />
+              <AvatarImage
+                src={"https://github.com/shadcn.png"}
+                alt={user.id}
+              />
               <AvatarFallback>{user.role.charAt(0)}</AvatarFallback>
             </Avatar>
           </Button>
@@ -66,7 +69,9 @@ export function UserNav({ user }: UserNavProps) {
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{user.id}</p>
-              <p className="text-xs leading-none text-muted-foreground">{user.role}</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                {user.role}
+              </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -92,5 +97,5 @@ export function UserNav({ user }: UserNavProps) {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
+  );
 }
