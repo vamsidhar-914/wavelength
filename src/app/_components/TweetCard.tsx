@@ -25,6 +25,8 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { api } from "~/trpc/react";
 import { toast } from "~/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { TweetSkeleton } from "~/skeleton/TweetSkeleton";
 
 type User = {
   id: string;
@@ -47,16 +49,53 @@ type TweetCardProps = {
 };
 
 export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
+  const router = useRouter();
+  const pathName = window.location.pathname
   const isAuthor = currentUserId?.id === tweet.user.id;
   const tweetId = tweet.id;
 
   const trpcUtils = api.useUtils();
+  // const {  data,isLoading } = api.comment.getCommentsByWaveId.useQuery({ waveId: tweet.id }, {
+  //   retry: false,
+  //   refetchOnWindowFocus: false,
+  // },)
   const { mutate: likeMutation } = api.tweet.toggleLike.useMutation({
-    onMutate({ id }) {
-      toast({
-        title: id,
-      });
-    },
+    // onMutate: async({ id }) => {
+    //    await trpcUtils.tweet.infiniteFeed.cancel()
+    //    const prevData = trpcUtils.tweet.infiniteFeed.getInfiniteData()
+
+    //    trpcUtils.tweet.infiniteFeed.setInfiniteData({} , (oldData) => {
+    //     if(oldData == null) return;
+    //     return {
+    //       ...oldData,
+    //       pages: oldData.pages.map((page) => {
+    //         return{
+    //           ...page,
+    //           tweets: page.tweets.map((tweet) => {
+    //             if(tweet.id === id){
+    //               if(tweet.likedByMe){
+    //                 return {
+    //                   ...tweet,
+    //                   likedByMe: false,
+    //                   likeCount: tweet.likeCount - 1
+    //                 }
+    //               }else{
+    //                 return {
+    //                   ...tweet,
+    //                   likedByMe: true,
+    //                   likeCount: tweet.likeCount + 1
+    //                 }
+    //               }
+    //             }
+    //             return tweet;
+    //           })
+    //         }
+    //       })
+    //     }
+    //    })
+
+    //    return ({ prevData })
+    // },
     onSuccess: ({ addedLike }) => {
       const updateData: Parameters<
         typeof trpcUtils.tweet.infiniteFeed.setInfiniteData
@@ -86,15 +125,21 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         };
       };
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
+      console.log("success")
     },
-    onError(error) {
-      if (error.data?.code === "UNAUTHORIZED") {
-        toast({
-          title: "UNAUTHORIZED",
-          description: "You need to login to like",
-          variant: "destructive",
-        });
-      }
+    onError(error, variables, context) {
+      // trpcUtils.tweet.infiniteFeed.setInfiniteData({}, context?.prevData)
+      // toast({
+      //   title: "something went wrong",
+      //   variant: 'destructive'
+      // })
+        if (error.data?.code === "UNAUTHORIZED") {
+          toast({
+            title: "UNAUTHORIZED",
+            description: "You need to login to like",
+            variant: "destructive",
+          });
+        }
     },
   });
   const { mutate: deleteMutation } = api.tweet.deleteWave.useMutation({
@@ -125,6 +170,10 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         };
       };
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
+      const segments = pathName.split("/");
+      if(segments[1] === "wave"){
+        router.push("/")
+      }
       toast({
         title: "Deleted wave",
         description: "wave got succesfully deleted",
@@ -197,6 +246,8 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
   function handleReport() {
     updateMutation({ createdAt: tweet.createdAt, tweetId: tweet.id, isAuthor });
   }
+
+  // if(isLoading) return <TweetSkeleton />
 
   return (
     <Card className="overflow-hidden mb-4">
@@ -276,7 +327,7 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         <Link href={`/wave/${tweet.id}`}>
           <Button variant="ghost" size="sm">
             <MessageCircle size={18} />
-            {/* <span className="ml-1">{tweets.comments > 0 ? tweets.comments : ""}</span> */}
+            {/* <span className="ml-1">{data?.comments.length! > 0 ? data?.comments.length : ""}</span> */}
             <span className="sr-only">Comments</span>
           </Button>
         </Link>

@@ -75,7 +75,6 @@ export default function LoginPage() {
     error,
   } = api.auth.signIn.useMutation({
     onSuccess(data, variables) {
-      console.log("data", data);
       if (data === "incorrect password") {
         setLoginError("Incorrect Password");
       } else if (data === "user not found,unable to login") {
@@ -91,7 +90,6 @@ export default function LoginPage() {
       }
     },
     onError(error, variables) {
-      console.log("error", error);
       toast({
         title: "Login failed",
         description: "Invalid email or password. Please try again.",
@@ -109,7 +107,6 @@ export default function LoginPage() {
       password: formData.password,
     });
 
-    console.log(loginData);
   };
 
   return (
