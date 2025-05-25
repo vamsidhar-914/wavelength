@@ -50,6 +50,7 @@ export function FollowButton({
             followsCount: oldData.followsCount + countModifier
         }
       })
+      trpcUtils.tweet.infiniteFeed.invalidate({ onlyFollowing: true })
     },
     onError(error, variables, context) {
       console.log(error);

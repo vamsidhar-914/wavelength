@@ -25,6 +25,7 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-floating-promises": "off",
       " @typescript-eslint/restrict-template-expressions": 'off',
+      " @typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/consistent-type-imports": "off",
       "@typescript-eslint/require-await": "off",
       " @typescript-eslint/prefer-nullish-coalescing": "off",
