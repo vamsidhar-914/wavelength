@@ -68,7 +68,6 @@ export function CommentItem({
 
   const handleReplySuccess = (newReply: Reply) => {
     setLoadReplies(prev => [newReply,...prev])
-    setShowReplyForm(false);
   };
 
   const getThreadColor = (depth: number) => {

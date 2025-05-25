@@ -11,11 +11,12 @@ import { Card, CardContent } from "~/components/ui/card"
 import { cn } from "~/lib/utils"
 import { api } from "~/trpc/react"
 import { toast } from "~/hooks/use-toast"
+import type { Reply } from "./CommentsList"
 
 interface ReplyFormProps {
   commentId: string
   waveId: string
-  onSuccessReply: (reply: any) => void
+  onSuccessReply: (reply: Reply) => void
   onCancel: () => void
   replyingTo: string
   depth?: number
@@ -49,7 +50,11 @@ export function ReplyForm({ commentId, waveId, onSuccessReply, onCancel, replyin
                 })
             }
         })
-        onSuccessReply(data)
+        onSuccessReply({
+          ...data,
+          replyToId: commentId,
+          replies:[]
+        })
         setContent("")
         toast({
             title: "replied successfully",
