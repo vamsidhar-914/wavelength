@@ -5,11 +5,11 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 - [x] complete nested comments functionality
 - [x] cache update logic for cmnts
 - [x] like/unlike bug fix when user loggedout
+- [x] implement follow functionality
 
 
 ## TODO
 
-- [] optimise nested comments/replies(trpc infiniteQuery)
+- [] optimise infinite nested comments/replies(trpc infiniteQuery)
 - [] implement optimistic updates
-- [] implement follow functionality
 - [] uploadthing/file storage

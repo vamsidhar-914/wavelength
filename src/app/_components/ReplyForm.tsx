@@ -98,7 +98,7 @@ export function ReplyForm({ commentId, waveId, onSuccessReply, onCancel, replyin
         <CardContent className="p-3">
           <div className="flex gap-3">
             <Avatar className="h-7 w-7 border-2 flex-shrink-0">
-              <AvatarImage src="/placeholder.svg?height=28&width=28" alt="Your avatar" />
+              <AvatarImage src="https://github.com/shadcn.png" alt="Your avatar" />
               <AvatarFallback className="text-xs">U</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">

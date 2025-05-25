@@ -16,6 +16,7 @@ import {
   UserPlus,
   UserMinus,
   MoreHorizontal,
+  User,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,8 +26,12 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { api } from "~/trpc/react";
 import { toast } from "~/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { TweetSkeleton } from "~/skeleton/TweetSkeleton";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
+import { TooltipContent } from "@radix-ui/react-tooltip";
+import { Skeleton } from "~/components/ui/skeleton";
+import { FollowButton } from "./FollowButton";
 
 type User = {
   id: string;
@@ -59,6 +64,11 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
   //   retry: false,
   //   refetchOnWindowFocus: false,
   // },)
+  const tweetUser = api.tweet.getUserById.useQuery({ id: tweet.user.id },{
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+})
   const { mutate: likeMutation } = api.tweet.toggleLike.useMutation({
     // onMutate: async({ id }) => {
     //    await trpcUtils.tweet.infiniteFeed.cancel()
@@ -125,6 +135,9 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         };
       };
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({ onlyFollowing: true },updateData)
+      trpcUtils.tweet.infiniteProfileFeed.setInfiniteData({ userId: tweet.user.id },updateData)
+      trpcUtils.tweet.infiniteProfileFeed.invalidate()
       console.log("success")
     },
     onError(error, variables, context) {
@@ -280,6 +293,16 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
                   <span className="sr-only">follow</span>
                 </Button>
               )}
+              {/* {!isAuthor && currentUserId?.id && tweetUser.data != null ?  (
+                <FollowButton 
+                currentUser={currentUserId}
+                isFollowing={tweetUser.data.isFollowing}
+                userId={tweet.user.id}
+                username={tweet.user.name}
+                />
+                  ): (
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                  )} */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">

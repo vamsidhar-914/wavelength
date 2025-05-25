@@ -169,6 +169,77 @@ export const tweetRouter = createTRPCRouter({
   adminRoute: adminProcedure.mutation(async ({ ctx }) => {
     return ctx.isAdmin;
   }),
+  getUserById: publicProcedure
+    .input(z.object({
+      id: z.string()
+    }))
+    .query(async ({ ctx,input: { id } }) => {
+      const currentUserId = ctx.user?.id
+        const user = await ctx.db.user.findUnique({
+          where: {
+            id,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            _count: {
+              select: {
+                followers: true,
+                follows: true,
+                tweets: true,
+              },
+            },
+            followers:
+              currentUserId == null ? undefined : { where: { id: currentUserId } },
+          },
+        });
+        if (user == null) return;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          tweetsCount: user._count.tweets,
+          followsCount: user._count.follows,
+          followersCount: user._count.followers,
+          isFollowing: user.followers.length > 0
+        }
+    }),
+  toggleFollow: protectedProcedure
+    .input(z.object({
+      userId: z.string()
+    }))
+    .mutation(async({ ctx,input: { userId} }) => {
+      const currentUserId = ctx.user.id
+      // we are getting user by userid if they are followed by me
+      const existingFollow = await ctx.db.user.findFirst({
+        where: {
+          id: userId,
+          followers: {
+            some: { id: currentUserId }
+          }
+        }
+      })
+      let addedFollow;
+      if(existingFollow == null){
+        await ctx.db.user.update({
+          where: { id: userId },
+          data: {
+            followers: { connect: { id: currentUserId } }
+          }
+        })
+        addedFollow = true;
+      }else{
+        await ctx.db.user.update({
+          where: { id: userId },
+          data: {
+            followers: { disconnect: { id: currentUserId } }
+          }
+        })
+        addedFollow = false
+      }
+      return { addedFollow };
+    }),
   getWaveById: publicProcedure
     .input(
       z.object({
