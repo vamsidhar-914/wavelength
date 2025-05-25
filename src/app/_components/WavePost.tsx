@@ -8,18 +8,19 @@ import { api } from "~/trpc/react";
 import { TweetSkeleton } from "~/skeleton/TweetSkeleton";
 import { CommentForm } from "./commentForm";
 import { toast } from "~/hooks/use-toast";
+import { CommentList } from "./CommentsList";
 
 type User = {
   id: string;
   role: string;
-} | null;
+} | null; 
 
 type WavePostType = {
   waveId: string;
   user: User;
 };
 
-export function WavePost({ waveId, user }: WavePostType) {
+export default function WavePost({ waveId, user }: WavePostType) {
   const { data: comments, error: commentsError } =
     api.comment.getCommentsByWaveId.useQuery(
       { waveId },
@@ -35,7 +36,6 @@ export function WavePost({ waveId, user }: WavePostType) {
       refetchOnWindowFocus: false,
     },
   );
-
   if (isLoading)
     return (
       <div className="container max-w-2xl py-6">
@@ -56,6 +56,7 @@ export function WavePost({ waveId, user }: WavePostType) {
       variant: "destructive",
     });
   }
+
   return (
     <div className="container max-w-2xl py-6">
       <Link href="/" className="inline-flex items-center mb-6">
@@ -68,7 +69,7 @@ export function WavePost({ waveId, user }: WavePostType) {
       <TweetCard tweet={data} currentUserId={user} />
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Responses</h2>
+        <h2 className="text-xl font-semibold mb-4 border-l-4 border-l-emerald-600 px-3">Responses <span className="text-emerald-600">({comments?.comments.length})</span></h2>
         {user ? (
           <CommentForm waveId={waveId} />
         ) : (
@@ -82,13 +83,17 @@ export function WavePost({ waveId, user }: WavePostType) {
           </div>
         )}
 
-        <div className="mt-6">
-          {comments?.comments.length === 0 ? (
-            <h1>no comments found for this wave</h1>
+       <div className="container max-w-xl py-2">
+        <p className="text-muted-foreground">comments</p>
+        <div className="mt-2">
+          {/* {comments?.comments == undefined ? (
+            <TweetSkeleton />
           ) : (
-            comments?.comments.map((comment) => <h1 key={comment.id}>{comment.content}</h1>)
-          )}
-        </div>
+            <CommentList waveId={waveId} comments={comments?.comments} currentUser={user} />
+          )} */}
+           <CommentList waveId={waveId} comments={comments?.comments} currentUser={user} />
+          </div>
+       </div>
       </div>
     </div>
   );

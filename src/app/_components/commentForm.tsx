@@ -6,6 +6,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import { Textarea } from "~/components/ui/textarea"
+import { api } from "~/trpc/react"
+import { toast } from "~/hooks/use-toast"
 
 
 interface CommentFormProps {
@@ -14,11 +16,43 @@ interface CommentFormProps {
 
 export function CommentForm({ waveId }: CommentFormProps) {
   const [content, setContent] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const router = useRouter()
+  const router = useRouter();
+  const trpcUtils = api.useUtils();
+  const data = api.comment.createComment.useMutation({
+    onSuccess(data) {
+      trpcUtils.comment.getCommentsByWaveId.setData({ waveId } , (oldData) => {
+        if(oldData == null || oldData.comments == null){
+          return
+        }
+        const newCachedComment = {
+          ...data,
+          replies: []
+        }
+        return {
+          ...oldData,
+          comments: [...oldData.comments,newCachedComment]
+        }
+      })
+      setContent("")
+        toast({
+          title: "created comment",
+          description: data.id,
+        })
+    
+    },  
+    onError(error) {
+        console.log(error);
+        toast({
+          title: "something went wrong",
+          description: error.message,
+          variant: 'destructive'
+        })
+    },
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    // create trpc post query
+    e.preventDefault();
+    data.mutate({ content,waveId })
   }
 
   return (
@@ -35,9 +69,9 @@ export function CommentForm({ waveId }: CommentFormProps) {
         <Button
           type="submit"
           className="bg-emerald-600 hover:bg-emerald-700"
-          disabled={!content.trim() || isSubmitting}
+          disabled={!content.trim() || data.isPending}
         >
-          {isSubmitting ? "Responding..." : "Respond"}
+          {data.isPending ? "Responding..." : "Respond"}
         </Button>
       </div>
     </form>

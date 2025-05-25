@@ -1,4 +1,5 @@
-import { WavePost } from "~/app/_components/WavePost";
+
+import WavePost from "~/app/_components/WavePost";
 import { getServerSideUser } from "~/lib/user_utils";
 
 export default async function WavePage({

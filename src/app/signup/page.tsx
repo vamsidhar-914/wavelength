@@ -95,7 +95,6 @@ export default function SignupPage() {
     isPending,
   } = api.auth.signUp.useMutation({
     onSuccess(data, variables) {
-      console.log(data);
       setFormData({
         firstName: "",
         lastName: "",

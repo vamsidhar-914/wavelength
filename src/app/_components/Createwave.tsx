@@ -20,9 +20,16 @@ export default function Createwave({ user }: { user: UserType }) {
 
   const {
     mutate: tweetMutation,
+    data,
     isPending,
     error,
   } = api.tweet.create.useMutation({
+    onMutate: async () => {
+      await trpcUtils.tweet.infiniteFeed.cancel()
+     const prevData = trpcUtils.tweet.infiniteFeed.getInfiniteData()
+
+     return ({ prevData })
+    },
     onSuccess(data) {
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, (oldData) => {
         if (oldData == null || oldData.pages[0] == null) {
@@ -63,6 +70,7 @@ export default function Createwave({ user }: { user: UserType }) {
           variant: "destructive",
         });
       }
+      trpcUtils.tweet.infiniteFeed.setInfiniteData({} , context?.prevData)
     },
   });
 

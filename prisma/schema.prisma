@@ -62,14 +62,18 @@ model Like {
 }
 
 model Comment {
-    id String @id @default(ulid())
+    id String @id @default(uuid())
     content String
-    createdAt DateTime
+    createdAt DateTime @default(now())
     userId String
     tweetId String
 
     user User @relation(fields: [userId],references: [id], onDelete: Cascade)
     tweet Tweet @relation(fields: [tweetId],references: [id],onDelete: Cascade)
+
+    replyToId String? // comment Id
+    replyTo Comment? @relation("CommentReplies", fields: [replyToId],references: [id],onDelete: NoAction,onUpdate: NoAction)
+    replies Comment[] @relation("CommentReplies")
 
     @@unique([createdAt,id])
     @@index([tweetId])
