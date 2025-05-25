@@ -312,18 +312,32 @@ export function TweetCard({ tweet, currentUserId }: TweetCardProps) {
         </p>
       </CardContent>
       <CardFooter className="border-t p-2 flex items-center">
-        <Button
+        {currentUserId ? (
+          <Button
           variant="ghost"
           size="sm"
           className={tweet.likedByMe ? "text-rose-500" : ""}
           onClick={handleToggle}
-        >
-          <Heart size={18} className={tweet.likedByMe ? "fill-rose-500" : ""} />
+       >
+           <Heart size={18} className={tweet.likedByMe ? "fill-rose-500" : ""} />
           <span className="ml-1">
             {tweet.likeCount > 0 ? tweet.likeCount : "0"}
           </span>
           <span className="sr-only">Resonance</span>
         </Button>
+        ): (
+          <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleToggle}
+       >
+           <Heart size={18} />
+          <span className="ml-1">
+            {tweet.likeCount > 0 ? tweet.likeCount : "0"}
+          </span>
+          <span className="sr-only">Resonance</span>
+        </Button>
+        )}
         <Link href={`/wave/${tweet.id}`}>
           <Button variant="ghost" size="sm">
             <MessageCircle size={18} />

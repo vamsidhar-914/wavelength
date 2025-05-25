@@ -86,7 +86,7 @@ export default function LoginPage() {
           description: data,
         });
         router.push("/");
-        router.refresh();
+        router.refresh()
       }
     },
     onError(error, variables) {
